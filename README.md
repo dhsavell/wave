@@ -1,2 +1,3 @@
 # wave
-A Discord bot focused on server administration.
+
+> A Discord bot focused on server administration.
