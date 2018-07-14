@@ -1,2 +1,2 @@
-# pushpin
-A simple Discord bot with message management and administration features.
+# wave
+A Discord bot focused on server administration.
