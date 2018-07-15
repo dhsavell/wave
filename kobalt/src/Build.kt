@@ -14,7 +14,7 @@ object Versions {
     const val KEDIS = "1.1"
 
     const val MOCKK = "1.8.5"
-    const val SPEK = "1.1.5"
+    const val JUNIT = "5.2.0"
 }
 
 
@@ -54,8 +54,8 @@ val waveCore = project {
 
     dependenciesTest {
         compile("io.mockk:mockk-common:${Versions.MOCKK}")
-        compile("org.jetbrains.spek:spek-api:${Versions.SPEK}")
-        runtime("org.jetbrains.spek:spek-junit-platform-engine:${Versions.SPEK}")
+        compile("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT}")
+        runtime("org.junit.jupiter:junit-jupiter-engine:${Versions.JUNIT}")
     }
 
     apt {

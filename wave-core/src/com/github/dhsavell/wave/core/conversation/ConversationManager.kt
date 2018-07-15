@@ -1,71 +1,84 @@
 package com.github.dhsavell.wave.core.conversation
 
-import com.github.dhsavell.wave.core.bot.ModularBot
 import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IUser
 
-data class ConversationProgress(var progress: List<ConversationPrompt>, val location: IChannel, val participant: IUser,
-                                val onCompleted: (Conversation) -> Unit)
+data class ActiveConversation(var progress: List<ConversationPrompt>,
+                              var responses: Map<String, String>,
+                              val location: IChannel,
+                              val participant: IUser)
 
 const val MAX_CONVERSATION_LENGTH = 20
 
 /**
  * A class for managing multiple ongoing Conversations at once.
  */
-class ConversationManager(private val bot: ModularBot) {
-    var activeConversations: List<ConversationProgress> = listOf()
+class ConversationManager {
+    private var activeConversations: List<ActiveConversation> = listOf()
 
     /**
      * Starts a conversation with a given prompt.
      * @param start First conversation prompt.
      * @param location Channel the conversation is taking place in.
      * @param participant User participating in the conversation.
-     * @param onCompleted Callback for when the conversation is finished.
      */
-    fun beginConversation(start: ConversationPrompt, location: IChannel, participant: IUser,
-                          onCompleted: (Conversation) -> Unit) {
+    fun beginConversation(start: ConversationPrompt, location: IChannel, participant: IUser) {
         start.sendPrompt(location, participant)
-        activeConversations += ConversationProgress(listOf(start), location, participant, onCompleted)
+        activeConversations += ActiveConversation(listOf(start), mapOf(), location, participant)
     }
 
     /**
      * Determines whether or not a message is a conversation response.
-     * @param message Message to test.
-     * @return Whether or not the message is part of a conversation.
      */
     fun isConversationResponse(message: IMessage): Boolean {
         return getCorrespondingConversation(message) == null
     }
 
-    private fun getCorrespondingConversation(message: IMessage): ConversationProgress? {
+    /**
+     * Attempts to get the corresponding ActiveConversation from a given message.
+     */
+    private fun getCorrespondingConversation(message: IMessage): ActiveConversation? {
         return activeConversations.find { conversation ->
             conversation.participant == message.author &&
                     conversation.location == message.channel
         }
     }
 
+    private fun removeConversation(activeConversation: ActiveConversation) {
+        activeConversations = activeConversations.filterNot { it == activeConversation }
+    }
+
     /**
      * Handles a conversation response.
-     * @param message Message to handle, should be a response to any conversation.
+     *
+     * This could be: sending the next prompt to the user, repeating the prompt (in the event of invalid input), or
+     * ending the conversation when it is finished.
+     *
+     * @param message Message to handle, should be a response to any active conversation.
      */
     fun handleConversationResponse(message: IMessage) {
-        if (!isConversationResponse(message)) {
+        val activeConversation = getCorrespondingConversation(message) ?: return
+
+        if (message.content.equals("!cancel", true)) {
             return
         }
 
-        val conversationProgress = getCorrespondingConversation(message)!!
-        val nextPrompt = conversationProgress.progress.last().handleResponse(message)
+        val activePrompt = activeConversation.progress.last()
+        val promptResult = activePrompt.handleResponse(message)
 
-        if (nextPrompt != null) {
-            if (conversationProgress.progress.size + 1 > MAX_CONVERSATION_LENGTH) {
-                bot.sendError(conversationProgress.location, "This conversation has exceeded its maximum length. Please try again.")
+        when (promptResult) {
+            is Next -> {
+                promptResult.nextPrompt.sendPrompt(activeConversation.location, activeConversation.participant)
+                activeConversation.responses += Pair(activePrompt.promptName, promptResult.responseValue)
+                activeConversation.progress += promptResult.nextPrompt
             }
-
-            conversationProgress.progress += nextPrompt
-        } else {
-            conversationProgress.onCompleted(Conversation(conversationProgress.progress, conversationProgress.location,
-                    conversationProgress.participant))
+            is Repeat -> {
+                activePrompt.sendPrompt(activeConversation.location, activeConversation.participant)
+            }
+            is Finish -> {
+                removeConversation(activeConversation)
+            }
         }
     }
 }
