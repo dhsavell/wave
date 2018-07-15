@@ -5,7 +5,18 @@ import com.beust.kobalt.plugin.apt.apt
 import com.beust.kobalt.plugin.packaging.assemble
 import com.beust.kobalt.project
 
-const val VERSION = "0.0.0"
+object Versions {
+    const val WAVE = "0.0.0"
+
+    const val KOTLIN = "1.2.50"
+    const val SEZPOZ = "1.13"
+    const val DISCORD4J = "2.10.1"
+    const val KEDIS = "1.1"
+
+    const val MOCKK = "1.8.5"
+    const val SPEK = "1.1.5"
+}
+
 
 val buildscript = buildScript {
     repos("https://jitpack.io")
@@ -15,7 +26,7 @@ fun Project.waveModule(moduleName: String) {
     name = "wave-$moduleName"
     group = "com.github.dhsavell.wave"
     artifactId = name
-    version = VERSION
+    version = Versions.WAVE
     directory = "./wave-$moduleName"
 
     sourceDirectories {
@@ -27,8 +38,8 @@ fun Project.waveModule(moduleName: String) {
     }
 
     dependencies {
-        compile("org.jetbrains.kotlin:kotlin-runtime:1.2.10",
-                "org.jetbrains.kotlin:kotlin-stdlib:1.2.10")
+        compile("org.jetbrains.kotlin:kotlin-runtime:${Versions.KOTLIN}")
+        compile("org.jetbrains.kotlin:kotlin-stdlib:${Versions.KOTLIN}")
     }
 }
 
@@ -36,15 +47,15 @@ val waveCore = project {
     waveModule("core")
 
     dependencies {
-        compile("net.java.sezpoz:sezpoz:1.13")
-        compile("com.discord4j:Discord4J:jar:2.10.1")
-        compile("com.sxtanna.database:Kedis:1.1")
+        compile("net.java.sezpoz:sezpoz:${Versions.SEZPOZ}")
+        compile("com.discord4j:Discord4J:jar:${Versions.DISCORD4J}")
+        compile("com.sxtanna.database:Kedis:${Versions.KEDIS}")
     }
 
     dependenciesTest {
-        compile("io.mockk:mockk-common:1.8.5")
-        compile("org.jetbrains.spek:spek-api:1.1.5")
-        runtime("org.jetbrains.spek:spek-junit-platform-engine:1.1.5")
+        compile("io.mockk:mockk-common:${Versions.MOCKK}")
+        compile("org.jetbrains.spek:spek-api:${Versions.SPEK}")
+        runtime("org.jetbrains.spek:spek-junit-platform-engine:${Versions.SPEK}")
     }
 
     apt {

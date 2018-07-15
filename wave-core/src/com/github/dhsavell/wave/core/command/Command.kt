@@ -1,13 +1,25 @@
 package com.github.dhsavell.wave.core.command
 
-import net.java.sezpoz.Indexable
+import com.github.dhsavell.wave.core.bot.ModularBot
+import sx.blah.discord.handle.obj.IMessage
 
 /**
- * Annotation for marking a UserCommand as automatically loadable.
- * @param name Name of the command, used both for display and invocation.
- * @param aliases List of the command's aliases, used for invocation.
+ * Interface representing a command that can be called by a user.
  */
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.SOURCE)
-@Indexable(type = UserCommand::class)
-annotation class Command(val name: String, val aliases: Array<String> = [])
+interface Command {
+    /**
+     * Determines whether or not a command is usable by a user.
+     * @param bot Bot calling this command.
+     * @param message Message containing the command invocation.
+     * @return Whether or not the user can use this command.
+     */
+    fun isUsable(bot: ModularBot, message: IMessage): Boolean
+
+    /**
+     * Executes this command.
+     * @param bot Bot calling this command.
+     * @param message Message containing the command invocation.
+     * @return Whether or not the command was executed successfully.
+     */
+    fun call(bot: ModularBot, message: IMessage, args: Array<String>): Boolean
+}
