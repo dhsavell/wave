@@ -4,7 +4,7 @@ package com.github.dhsavell.wave.core.command
  * A class for containing and managing commands.
  * @param commands Available commands.
  */
-class CommandManager(private val commands: Map<CommandModule, Command>) {
+class CommandManager(private val commands: List<Command>) {
     /**
      * Gets a command from a given call.
      *
@@ -16,11 +16,8 @@ class CommandManager(private val commands: Map<CommandModule, Command>) {
     fun getCommandFromCall(commandCall: String): Command? {
         val callComponents = commandCall.split(" ")
         val commandName = callComponents[0].toLowerCase()
-        val commandMatch = commands.filter { commandEntry ->
-            commandEntry.key.name == commandName ||
-                    commandEntry.key.aliases.contains(commandName)
-        }.map { commandEntry ->
-            commandEntry.value
+        val commandMatch = commands.filter { command ->
+            command.name == commandName || command.aliases.contains(commandName)
         }
 
         return commandMatch.firstOrNull()

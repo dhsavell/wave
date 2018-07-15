@@ -9,8 +9,6 @@ data class ActiveConversation(var progress: List<ConversationPrompt>,
                               val location: IChannel,
                               val participant: IUser)
 
-const val MAX_CONVERSATION_LENGTH = 20
-
 /**
  * A class for managing multiple ongoing Conversations at once.
  */
@@ -65,18 +63,18 @@ class ConversationManager {
         }
 
         val activePrompt = activeConversation.progress.last()
-        val promptResult = activePrompt.handleResponse(message)
+        val promptResult = activePrompt.handleResponse(message, activeConversation.responses)
 
         when (promptResult) {
-            is Next -> {
+            is NextPrompt -> {
                 promptResult.nextPrompt.sendPrompt(activeConversation.location, activeConversation.participant)
                 activeConversation.responses += Pair(activePrompt.promptName, promptResult.responseValue)
                 activeConversation.progress += promptResult.nextPrompt
             }
-            is Repeat -> {
+            is RepeatPrompt -> {
                 activePrompt.sendPrompt(activeConversation.location, activeConversation.participant)
             }
-            is Finish -> {
+            is FinishConversation -> {
                 removeConversation(activeConversation)
             }
         }

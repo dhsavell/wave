@@ -33,10 +33,6 @@ fun Project.waveModule(moduleName: String) {
         path("src", "res")
     }
 
-    sourceDirectoriesTest {
-        path("test")
-    }
-
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-runtime:${Versions.KOTLIN}")
         compile("org.jetbrains.kotlin:kotlin-stdlib:${Versions.KOTLIN}")
@@ -45,6 +41,10 @@ fun Project.waveModule(moduleName: String) {
 
 val waveCore = project {
     waveModule("core")
+
+    sourceDirectoriesTest {
+        path("test")
+    }
 
     dependencies {
         compile("net.java.sezpoz:sezpoz:${Versions.SEZPOZ}")

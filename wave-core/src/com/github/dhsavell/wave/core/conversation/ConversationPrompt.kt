@@ -5,9 +5,9 @@ import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IUser
 
 sealed class PromptResult
-data class Next(val nextPrompt: ConversationPrompt, val responseValue: String) : PromptResult()
-object Repeat : PromptResult()
-object Finish : PromptResult()
+data class NextPrompt(val nextPrompt: ConversationPrompt, val responseValue: String) : PromptResult()
+object RepeatPrompt : PromptResult()
+object FinishConversation : PromptResult()
 
 /**
  * Interface representing a single prompt in a conversation.
@@ -31,5 +31,5 @@ interface ConversationPrompt {
      * @param response User's response.
      * @return The next ConversationPrompt to prompt the user with, or null if the conversation is over.
      */
-    fun handleResponse(response: IMessage): PromptResult
+    fun handleResponse(response: IMessage, pastResponses: Map<String, String>): PromptResult
 }
