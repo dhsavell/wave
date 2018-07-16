@@ -7,19 +7,21 @@ import com.beust.kobalt.project
 
 object Versions {
     const val WAVE = "0.0.0"
-
     const val KOTLIN = "1.2.50"
-    const val SEZPOZ = "1.13"
+
     const val DISCORD4J = "2.10.1"
     const val KEDIS = "1.1"
 
     const val MOCKK = "1.8.5"
-    const val JUNIT = "5.2.0"
+    const val KOTLINTEST = "3.1.7"
+
+    const val DAGGER = "2.5"
+    const val SEZPOZ = "1.13"
 }
 
 
 val buildscript = buildScript {
-    repos("https://jitpack.io")
+    repos("http://central.maven.org/maven2/")
 }
 
 fun Project.waveModule(moduleName: String) {
@@ -47,19 +49,13 @@ val waveCore = project {
     }
 
     dependencies {
-        compile("net.java.sezpoz:sezpoz:${Versions.SEZPOZ}")
         compile("com.discord4j:Discord4J:jar:${Versions.DISCORD4J}")
         compile("com.sxtanna.database:Kedis:${Versions.KEDIS}")
     }
 
     dependenciesTest {
         compile("io.mockk:mockk-common:${Versions.MOCKK}")
-        compile("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT}")
-        runtime("org.junit.jupiter:junit-jupiter-engine:${Versions.JUNIT}")
-    }
-
-    apt {
-
+        compile("io.kotlintest:kotlintest-runner-junit5:${Versions.KOTLINTEST}")
     }
 }
 
@@ -67,7 +63,10 @@ val waveApp = project(waveCore) {
     waveModule("app")
 
     dependencies {
+        compile("com.google.dagger:dagger:${Versions.DAGGER}")
+        apt("com.google.dagger:dagger-compiler:${Versions.DAGGER}")
 
+        compile("net.java.sezpoz:sezpoz:${Versions.SEZPOZ}")
     }
 
     assemble {

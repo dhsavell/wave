@@ -1,12 +1,12 @@
 package com.github.dhsavell.wave.core.command
 
-import com.github.dhsavell.wave.core.bot.ModularBot
+import com.github.dhsavell.wave.core.bot.Bot
 import sx.blah.discord.handle.obj.IMessage
 
 sealed class CommandResult
-object Failed : CommandResult()
-object SuccededUnit : CommandResult()
-data class SuccededWithValue(val message: String) : CommandResult()
+object CommandFailed : CommandResult()
+object CommandSucceeded : CommandResult()
+data class CommandSucceededWithValue(val message: String) : CommandResult()
 
 /**
  * Interface representing a command that can be called by a user.
@@ -21,14 +21,7 @@ interface Command {
      * Aliases of this command.
      */
     val aliases: Array<String>
-
-    /**
-     * Determines whether or not a command is usable by a user.
-     * @param bot Bot calling this command.
-     * @param message Message containing the command invocation.
-     * @return Whether or not the user can use this command.
-     */
-    fun isUsable(bot: ModularBot, message: IMessage): Boolean
+        get() = arrayOf()
 
     /**
      * Executes this command.
@@ -36,5 +29,5 @@ interface Command {
      * @param message Message containing the command invocation.
      * @return Whether or not the command was executed successfully.
      */
-    fun call(bot: ModularBot, message: IMessage, args: Array<String>): CommandResult
+    fun call(bot: Bot, message: IMessage, args: Array<String>): CommandResult
 }

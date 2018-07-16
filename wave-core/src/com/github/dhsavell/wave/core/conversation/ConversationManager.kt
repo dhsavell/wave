@@ -29,7 +29,7 @@ class ConversationManager {
     /**
      * Determines whether or not a message is a conversation response.
      */
-    fun isConversationResponse(message: IMessage): Boolean {
+    fun isResponse(message: IMessage): Boolean {
         return getCorrespondingConversation(message) == null
     }
 
@@ -55,7 +55,7 @@ class ConversationManager {
      *
      * @param message Message to handle, should be a response to any active conversation.
      */
-    fun handleConversationResponse(message: IMessage) {
+    fun handleResponse(message: IMessage) {
         val activeConversation = getCorrespondingConversation(message) ?: return
 
         if (message.content.equals("!cancel", true)) {

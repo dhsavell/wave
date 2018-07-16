@@ -5,6 +5,7 @@ package com.github.dhsavell.wave.core.command
  * @param commands Available commands.
  */
 class CommandManager(private val commands: List<Command>) {
+
     /**
      * Gets a command from a given call.
      *
