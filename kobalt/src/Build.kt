@@ -1,5 +1,4 @@
 import com.beust.kobalt.api.Project
-import com.beust.kobalt.buildScript
 import com.beust.kobalt.plugin.application.application
 import com.beust.kobalt.plugin.apt.apt
 import com.beust.kobalt.plugin.packaging.assemble
@@ -12,16 +11,11 @@ object Versions {
     const val DISCORD4J = "2.10.1"
     const val KEDIS = "1.1"
 
-    const val MOCKK = "1.8.5"
+    const val MOCKITO_KOTLIN = "2.0.0-RC1"
     const val KOTLINTEST = "3.1.7"
 
-    const val DAGGER = "2.5"
     const val SEZPOZ = "1.13"
-}
-
-
-val buildscript = buildScript {
-    repos("http://central.maven.org/maven2/")
+    const val KODEIN = "5.2.0"
 }
 
 fun Project.waveModule(moduleName: String) {
@@ -36,8 +30,9 @@ fun Project.waveModule(moduleName: String) {
     }
 
     dependencies {
-        compile("org.jetbrains.kotlin:kotlin-runtime:${Versions.KOTLIN}")
-        compile("org.jetbrains.kotlin:kotlin-stdlib:${Versions.KOTLIN}")
+        compile("org.jetbrains.kotlin:kotlin-runtime:${Versions.KOTLIN}",
+                "org.jetbrains.kotlin:kotlin-stdlib:${Versions.KOTLIN}",
+                "com.discord4j:Discord4J:jar:${Versions.DISCORD4J}")
     }
 }
 
@@ -49,13 +44,12 @@ val waveCore = project {
     }
 
     dependencies {
-        compile("com.discord4j:Discord4J:jar:${Versions.DISCORD4J}")
         compile("com.sxtanna.database:Kedis:${Versions.KEDIS}")
     }
 
     dependenciesTest {
-        compile("io.mockk:mockk-common:${Versions.MOCKK}")
-        compile("io.kotlintest:kotlintest-runner-junit5:${Versions.KOTLINTEST}")
+        compile("com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.MOCKITO_KOTLIN}",
+                "io.kotlintest:kotlintest-runner-junit5:${Versions.KOTLINTEST}")
     }
 }
 
@@ -63,10 +57,9 @@ val waveApp = project(waveCore) {
     waveModule("app")
 
     dependencies {
-        compile("com.google.dagger:dagger:${Versions.DAGGER}")
-        apt("com.google.dagger:dagger-compiler:${Versions.DAGGER}")
-
+        apt("net.java.sezpoz:sezpoz:${Versions.SEZPOZ}")
         compile("net.java.sezpoz:sezpoz:${Versions.SEZPOZ}")
+        compile("org.kodein.di:kodein-di-generic-jvm:${Versions.KODEIN}")
     }
 
     assemble {
