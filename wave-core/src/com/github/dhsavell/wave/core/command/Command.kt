@@ -1,6 +1,8 @@
 package com.github.dhsavell.wave.core.command
 
 import com.github.dhsavell.wave.core.bot.Bot
+import com.github.dhsavell.wave.core.permission.Permission
+import com.github.dhsavell.wave.core.permission.ServerAdminsCanUse
 import org.mapdb.DB
 import sx.blah.discord.handle.obj.IMessage
 
@@ -19,13 +21,24 @@ interface Command {
     val name: String
 
     /**
+     * Category of this command.
+     */
+    val category: Category
+
+    /**
+     * Default command of this permission. Can be overridden in servers.
+     */
+    val defaultPermission: Permission
+        get() = ServerAdminsCanUse
+
+    /**
      * Aliases of this command.
      */
     val aliases: Array<String>
-        get() = arrayOf()
+        get() = emptyArray()
 
     /**
-     * Executes this command.
+     * Invokes this command.
      * @param bot Bot calling this command.
      * @param db MapDB instance.
      * @param message Message containing the command invocation.

@@ -26,9 +26,6 @@ class CommandManager(private val commands: List<Command>) {
 
     /**
      * Gets arguments from a given call.
-     *
-     * @see getCommandFromCall for clarification on the meaning of "call".
-     * @param commandCall Full call to the command with no prefix.
      */
     fun getArgumentsFromCall(commandCall: String): Array<String> {
         return commandCall.split(" ").drop(1).toTypedArray()
