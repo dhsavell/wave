@@ -1,5 +1,9 @@
 .idea
-.kobalt/
-kobaltBuild
-*.iml
 .DS_Store
+.gradle
+/build
+
+gradle-app.setting
+!gradle-wrapper.jar
+
+.gradletasknamecache
