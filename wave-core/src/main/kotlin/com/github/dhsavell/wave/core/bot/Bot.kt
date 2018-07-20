@@ -12,7 +12,14 @@ import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 import java.awt.Color
 
-class Bot(private val client: IDiscordClient, private val defaultPrefix: String, private val db: DB,
+object BotColors {
+    val INFO = Color(0x45a1ff)
+    val WARNING = Color(0xffe900)
+    val ERROR = Color(0xff0039)
+    val SUCCESS = Color(0x30e60b)
+}
+
+class Bot(val client: IDiscordClient, private val defaultPrefix: String, private val db: DB,
           private val commandManager: CommandManager, private val conversationManager: ConversationManager) {
     init {
         val dispatcher = client.dispatcher
@@ -30,7 +37,7 @@ class Bot(private val client: IDiscordClient, private val defaultPrefix: String,
                 val commandCall = message.content.substring(defaultPrefix.length)
                 val command = commandManager.getCommandFromCall(commandCall)
                 if (command != null) {
-                    command(this, db, message, commandCall.split(" ").drop(1))
+                    command(db, message, commandCall.split(" ").drop(1))
                 } else {
                     message.channel.sendError("Unknown command.")
                 }
@@ -43,22 +50,23 @@ fun IChannel.sendEmbed(initBlock: DslEmbedBuilder.() -> Unit): IMessage {
     return sendMessage(embed(initBlock))
 }
 
+
 fun IChannel.sendInfo(message: String): IMessage = sendEmbed {
     title { message }
-    color { Color(0x45a1ff) }
+    color { BotColors.INFO }
 }
 
 fun IChannel.sendWarning(message: String): IMessage = sendEmbed {
     title { "**Warning**: $message" }
-    color { Color(0xffe900) }
+    color { BotColors.WARNING }
 }
 
 fun IChannel.sendError(message: String): IMessage = sendEmbed {
     title { "**Error**: $message" }
-    color { Color(0xff0039) }
+    color { BotColors.ERROR }
 }
 
 fun IChannel.sendSuccess(message: String): IMessage = sendEmbed {
     title { "**Success**: $message" }
-    color { Color(0x30e60b) }
+    color { BotColors.SUCCESS }
 }
