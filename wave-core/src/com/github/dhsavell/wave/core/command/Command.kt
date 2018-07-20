@@ -1,6 +1,7 @@
 package com.github.dhsavell.wave.core.command
 
 import com.github.dhsavell.wave.core.bot.Bot
+import org.mapdb.DB
 import sx.blah.discord.handle.obj.IMessage
 
 sealed class CommandResult
@@ -26,8 +27,9 @@ interface Command {
     /**
      * Executes this command.
      * @param bot Bot calling this command.
+     * @param db MapDB instance.
      * @param message Message containing the command invocation.
      * @return Whether or not the command was executed successfully.
      */
-    fun call(bot: Bot, message: IMessage, args: Array<String>): CommandResult
+    operator fun invoke(bot: Bot, db: DB, message: IMessage, args: List<String>): CommandResult
 }

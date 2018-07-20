@@ -9,7 +9,7 @@ object Versions {
     const val KOTLIN = "1.2.50"
 
     const val DISCORD4J = "2.10.1"
-    const val KEDIS = "1.1"
+    const val MAPDB = "3.0.7"
 
     const val MOCKITO_KOTLIN = "2.0.0-RC1"
     const val KOTLINTEST = "3.1.7"
@@ -32,7 +32,8 @@ fun Project.waveModule(moduleName: String) {
     dependencies {
         compile("org.jetbrains.kotlin:kotlin-runtime:${Versions.KOTLIN}",
                 "org.jetbrains.kotlin:kotlin-stdlib:${Versions.KOTLIN}",
-                "com.discord4j:Discord4J:jar:${Versions.DISCORD4J}")
+                "com.discord4j:Discord4J:jar:${Versions.DISCORD4J}",
+                "org.mapdb:mapdb:${Versions.MAPDB}")
     }
 }
 
@@ -41,10 +42,6 @@ val waveCore = project {
 
     sourceDirectoriesTest {
         path("test")
-    }
-
-    dependencies {
-        compile("com.sxtanna.database:Kedis:${Versions.KEDIS}")
     }
 
     dependenciesTest {

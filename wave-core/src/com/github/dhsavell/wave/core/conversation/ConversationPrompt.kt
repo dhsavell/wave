@@ -11,6 +11,7 @@ object FinishConversation : PromptResult()
 
 /**
  * Interface representing a single prompt in a conversation.
+ * TODO: Conversation DSL for simple conversation building
  */
 interface ConversationPrompt {
     /**

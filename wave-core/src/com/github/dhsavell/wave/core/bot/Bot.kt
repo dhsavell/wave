@@ -2,13 +2,14 @@ package com.github.dhsavell.wave.core.bot
 
 import com.github.dhsavell.wave.core.command.CommandManager
 import com.github.dhsavell.wave.core.conversation.ConversationManager
+import org.mapdb.DB
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventSubscriber
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
 import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 
-class Bot(private val client: IDiscordClient, private val defaultPrefix: String,
+class Bot(private val client: IDiscordClient, private val defaultPrefix: String, private val db: DB,
           private val commandManager: CommandManager, private val conversationManager: ConversationManager) {
     init {
         val dispatcher = client.dispatcher
@@ -38,7 +39,7 @@ class Bot(private val client: IDiscordClient, private val defaultPrefix: String,
                 val commandCall = message.content.substring(defaultPrefix.length)
                 val command = commandManager.getCommandFromCall(commandCall)
                 if (command != null) {
-                    command.call(this, message, commandCall.split(" ").drop(1).toTypedArray())
+                    command(this, db, message, commandCall.split(" ").drop(1))
                 } else {
                     sendError(message.channel, "Unknown command.")
                 }

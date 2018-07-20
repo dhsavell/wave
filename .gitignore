@@ -2,3 +2,4 @@
 .kobalt/
 kobaltBuild
 *.iml
+.DS_Store

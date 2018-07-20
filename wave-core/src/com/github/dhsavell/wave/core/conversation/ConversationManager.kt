@@ -58,7 +58,7 @@ class ConversationManager {
     fun handleResponse(message: IMessage) {
         val activeConversation = getCorrespondingConversation(message) ?: return
 
-        if (message.content.equals("!cancel", true)) {
+        if (message.content.equals("cancel", true)) {
             return
         }
 
