@@ -4,7 +4,7 @@ import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IUser
 
-data class ActiveConversation(var progress: List<ConversationPrompt>,
+data class ActiveConversation(var progress: List<Prompt>,
                               var responses: Map<String, String>,
                               val location: IChannel,
                               val participant: IUser)
@@ -21,7 +21,7 @@ class ConversationManager {
      * @param location Channel the conversation is taking place in.
      * @param participant User participating in the conversation.
      */
-    fun beginConversation(start: ConversationPrompt, location: IChannel, participant: IUser) {
+    fun beginConversation(start: Prompt, location: IChannel, participant: IUser) {
         start.sendPrompt(location, participant)
         activeConversations += ActiveConversation(listOf(start), mapOf(), location, participant)
     }
