@@ -5,6 +5,7 @@ import com.github.dhsavell.wave.core.conversation.ConversationManager
 import com.github.dhsavell.wave.core.util.DslEmbedBuilder
 import com.github.dhsavell.wave.core.util.embed
 import org.mapdb.DB
+import org.slf4j.Logger
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventSubscriber
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
@@ -19,11 +20,16 @@ object BotColors {
     val SUCCESS = Color(0x30e60b)
 }
 
-class Bot(val client: IDiscordClient, private val defaultPrefix: String, private val db: DB,
-          private val commandManager: CommandManager, private val conversationManager: ConversationManager) {
+class Bot(val client: IDiscordClient, val logger: Logger, private val defaultPrefix: String, private val db: DB,
+          val commandManager: CommandManager, private val conversationManager: ConversationManager) {
     init {
         val dispatcher = client.dispatcher
         dispatcher.registerListener(this)
+    }
+
+    fun runForever() {
+        logger.info("Logged in as ${client.ourUser.name}#${client.ourUser.discriminator} (${client.ourUser.stringID})")
+        logger.info("Currently in ${client.guilds.size} servers")
     }
 
     @EventSubscriber
@@ -37,7 +43,7 @@ class Bot(val client: IDiscordClient, private val defaultPrefix: String, private
                 val commandCall = message.content.substring(defaultPrefix.length)
                 val command = commandManager.getCommandFromCall(commandCall)
                 if (command != null) {
-                    command(db, message, commandCall.split(" ").drop(1))
+                    command(this, db, message, commandCall.split(" ").drop(1))
                 } else {
                     message.channel.sendError("Unknown command.")
                 }

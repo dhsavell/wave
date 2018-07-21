@@ -1,5 +1,6 @@
 package com.github.dhsavell.wave.core.command
 
+import com.github.dhsavell.wave.core.bot.Bot
 import com.github.dhsavell.wave.core.bot.BotColors
 import com.github.dhsavell.wave.core.bot.sendEmbed
 import com.github.dhsavell.wave.core.util.toChannelFromIdentifier
@@ -14,8 +15,8 @@ import sx.blah.discord.handle.obj.IUser
 import java.util.function.Supplier
 
 interface ArgParserCommand<T> : Command, Supplier<T> {
-    fun invokeWithArgs(db: DB, message: IMessage, args: T): CommandResult
-    override fun invoke(db: DB, message: IMessage, args: List<String>): CommandResult {
+    fun invokeWithArgs(bot: Bot, db: DB, message: IMessage, args: T): CommandResult
+    override fun invoke(bot: Bot, db: DB, message: IMessage, args: List<String>): CommandResult {
         return try {
             val parser = CommandLine(get())
             val guild = message.guild
@@ -25,7 +26,7 @@ interface ArgParserCommand<T> : Command, Supplier<T> {
             parser.registerConverter(IRole::class.java) { string -> string.toRoleFromIdentifier(guild) }
 
             val argsObject = parser.parse(*args.toTypedArray())[0].getCommand<T>()
-            invokeWithArgs(db, message, argsObject)
+            invokeWithArgs(bot, db, message, argsObject)
         } catch (e: CommandLine.ParameterException) {
             if (message.channel != null) {
                 message.channel.sendEmbed {

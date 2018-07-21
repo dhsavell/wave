@@ -23,7 +23,7 @@ class DslEmbedBuilder internal constructor(initBlock: DslEmbedBuilder.() -> Unit
         builder.withColor(init())
     }
 
-    fun section(title: String, description: String, inline: Boolean) {
+    fun section(title: String, description: String, inline: Boolean = false) {
         builder.appendField(title, description, inline)
     }
 

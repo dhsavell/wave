@@ -1,5 +1,6 @@
 package com.github.dhsavell.wave.core.command
 
+import com.github.dhsavell.wave.core.bot.Bot
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import io.kotlintest.shouldBe
@@ -13,13 +14,16 @@ import sx.blah.discord.handle.obj.IUser
 class TestCommand(private val onInvoked: (Args) -> Unit) : ArgParserCommand<TestCommand.Args> {
     override fun get(): Args = Args()
 
-    override fun invokeWithArgs(db: DB, message: IMessage, args: Args): CommandResult {
+    override fun invokeWithArgs(bot: Bot, db: DB, message: IMessage, args: Args): CommandResult {
         onInvoked(args)
         return CommandSucceededWithValue(args.message)
     }
 
     override val name: String = "test"
-    override val category: Category = Category("", "")
+    override val category: Category = object : Category {
+        override val name: String = ""
+        override val description: String = ""
+    }
 
     class Args {
         @CommandLine.Parameters(index = "0")
@@ -37,6 +41,8 @@ class TestCommand(private val onInvoked: (Args) -> Unit) : ArgParserCommand<Test
 }
 
 class ArgParserCommandTest : StringSpec({
+    val mockBot = Bot(mock(), mock(), "", mock(), mock(), mock())
+
     "Parameters can be passed to an ArgParserCommand" {
         val command = TestCommand { args ->
             args.message shouldBe "test"
@@ -44,7 +50,7 @@ class ArgParserCommandTest : StringSpec({
             args.flag shouldBe false
         }
 
-        command(mock(), mock(), listOf("test", "1", "2", "3"))
+        command(mockBot, mock(), mock(), listOf("test", "1", "2", "3"))
     }
 
     "Discord4J types can be parsed" {
@@ -72,14 +78,14 @@ class ArgParserCommandTest : StringSpec({
             args.user shouldBe mockUser2
         }
 
-        command(mock(), mockMessage, listOf("test", "1", "2", "3", "-u", "bar"))
-        command(mock(), mockMessage, listOf("test", "1", "2", "3", "-u", "200000000000000000"))
-        command(mock(), mockMessage, listOf("test", "1", "2", "3", "-u", "<@200000000000000000>"))
+        command(mockBot, mock(), mockMessage, listOf("test", "1", "2", "3", "-u", "bar"))
+        command(mockBot, mock(), mockMessage, listOf("test", "1", "2", "3", "-u", "200000000000000000"))
+        command(mockBot, mock(), mockMessage, listOf("test", "1", "2", "3", "-u", "<@200000000000000000>"))
     }
 
     "Command fails on invalid arguments" {
         val command = TestCommand { }
 
-        command(mock(), mock(), listOf("invalid", "arguments")) shouldBe CommandFailed
+        command(mockBot, mock(), mock(), listOf("invalid", "arguments")) shouldBe CommandFailed
     }
 })

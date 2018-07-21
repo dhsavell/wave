@@ -1,5 +1,6 @@
 package com.github.dhsavell.wave.core.command
 
+import com.github.dhsavell.wave.core.bot.Bot
 import com.github.dhsavell.wave.core.permission.Permission
 import com.github.dhsavell.wave.core.permission.ServerAdminsCanUse
 import org.mapdb.DB
@@ -42,5 +43,5 @@ interface Command {
      * @param message Message containing the command invocation.
      * @return Whether or not the command was executed successfully.
      */
-    operator fun invoke(db: DB, message: IMessage, args: List<String>): CommandResult
+    operator fun invoke(bot: Bot, db: DB, message: IMessage, args: List<String>): CommandResult
 }
