@@ -30,7 +30,7 @@ class ConversationManager {
      * Determines whether or not a message is a conversation response.
      */
     fun isResponse(message: IMessage): Boolean {
-        return getCorrespondingConversation(message) == null
+        return getCorrespondingConversation(message) != null
     }
 
     /**

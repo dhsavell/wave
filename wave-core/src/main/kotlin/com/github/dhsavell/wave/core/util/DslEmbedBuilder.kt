@@ -5,11 +5,11 @@ import sx.blah.discord.util.EmbedBuilder
 import java.awt.Color
 
 class DslEmbedBuilder internal constructor(initBlock: DslEmbedBuilder.() -> Unit) {
+    val builder = EmbedBuilder()
+
     init {
         initBlock()
     }
-
-    var builder = EmbedBuilder()
 
     fun title(init: DslEmbedBuilder.() -> String) {
         builder.withTitle(init())

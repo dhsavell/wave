@@ -1,6 +1,7 @@
 package com.github.dhsavell.wave.app.command.meta
 
 import com.github.dhsavell.wave.app.command.Meta
+import com.github.dhsavell.wave.app.provider.CommandProvider
 import com.github.dhsavell.wave.core.bot.Bot
 import com.github.dhsavell.wave.core.bot.sendEmbed
 import com.github.dhsavell.wave.core.bot.sendError
@@ -12,6 +13,7 @@ import org.mapdb.DB
 import picocli.CommandLine
 import sx.blah.discord.handle.obj.IMessage
 
+@CommandProvider
 class CommandHelp : ArgParserCommand<CommandHelp.Args> {
     override val name: String = "help"
     override val aliases: Array<String> = arrayOf("h")

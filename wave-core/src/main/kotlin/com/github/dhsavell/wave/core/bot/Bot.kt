@@ -2,12 +2,14 @@ package com.github.dhsavell.wave.core.bot
 
 import com.github.dhsavell.wave.core.command.CommandManager
 import com.github.dhsavell.wave.core.conversation.ConversationManager
+import com.github.dhsavell.wave.core.permission.PermissionManager
 import com.github.dhsavell.wave.core.util.DslEmbedBuilder
 import com.github.dhsavell.wave.core.util.embed
 import org.mapdb.DB
 import org.slf4j.Logger
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventSubscriber
+import sx.blah.discord.handle.impl.events.ReadyEvent
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent
 import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
@@ -20,16 +22,28 @@ object BotColors {
     val SUCCESS = Color(0x30e60b)
 }
 
-class Bot(val client: IDiscordClient, val logger: Logger, private val defaultPrefix: String, private val db: DB,
-          val commandManager: CommandManager, private val conversationManager: ConversationManager) {
+class Bot(val client: IDiscordClient,
+          val logger: Logger,
+          private val defaultPrefix: String,
+          private val db: DB,
+          val commandManager: CommandManager,
+          val conversationManager: ConversationManager,
+          val permissionManager: PermissionManager) {
+
     init {
         val dispatcher = client.dispatcher
         dispatcher.registerListener(this)
     }
 
     fun runForever() {
+        client.login()
+    }
+
+    @EventSubscriber
+    fun onReady(event: ReadyEvent) {
         logger.info("Logged in as ${client.ourUser.name}#${client.ourUser.discriminator} (${client.ourUser.stringID})")
-        logger.info("Currently in ${client.guilds.size} servers")
+        logger.info("Servers: ${client.guilds.size}")
+        logger.info("Commands: ${commandManager.commands.size}")
     }
 
     @EventSubscriber
@@ -39,11 +53,16 @@ class Bot(val client: IDiscordClient, val logger: Logger, private val defaultPre
         when {
             message.author == client.ourUser -> return
             conversationManager.isResponse(message) -> conversationManager.handleResponse(message)
-            message.content.startsWith(defaultPrefix) -> {
+            message.content.startsWith(defaultPrefix, true) -> {
+                logger.debug("command")
                 val commandCall = message.content.substring(defaultPrefix.length)
                 val command = commandManager.getCommandFromCall(commandCall)
                 if (command != null) {
-                    command(this, db, message, commandCall.split(" ").drop(1))
+                    if (permissionManager.userCanInvoke(command, message.author, message.guild)) {
+                        command(this, db, message, commandCall.split(" ").drop(1))
+                    } else {
+                        message.channel.sendError("You don't have permission to use this command.")
+                    }
                 } else {
                     message.channel.sendError("Unknown command.")
                 }
