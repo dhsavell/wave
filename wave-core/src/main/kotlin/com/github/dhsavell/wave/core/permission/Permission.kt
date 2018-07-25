@@ -1,11 +1,12 @@
 package com.github.dhsavell.wave.core.permission
 
+import com.github.dhsavell.wave.core.util.toRoleFromIdentifier
 import sx.blah.discord.handle.obj.IGuild
 import sx.blah.discord.handle.obj.IRole
 import sx.blah.discord.handle.obj.IUser
 import sx.blah.discord.handle.obj.Permissions
 
-sealed class Permission(val name: String) {
+sealed class Permission(open val name: String) {
     abstract fun appliesToUser(user: IUser, guild: IGuild): Boolean
     abstract fun toLong(): Long
 
@@ -22,6 +23,22 @@ sealed class Permission(val name: String) {
                         MembersWithRoleCanUse(storedRole)
                     } else {
                         NobodyCanUse
+                    }
+                }
+            }
+        }
+
+        fun fromString(string: String, guild: IGuild): Permission? {
+            return when (string.toLowerCase().trim()) {
+                AnybodyCanUse.name -> AnybodyCanUse
+                NobodyCanUse.name -> NobodyCanUse
+                ServerAdminsCanUse.name -> ServerAdminsCanUse
+                else -> {
+                    val givenRole = string.toRoleFromIdentifier(guild)
+                    return if (givenRole != null) {
+                        MembersWithRoleCanUse(givenRole)
+                    } else {
+                        null
                     }
                 }
             }
@@ -50,6 +67,8 @@ object ServerAdminsCanUse : Permission("admin") {
 }
 
 class MembersWithRoleCanUse(val role: IRole) : Permission("role") {
+    override val name get() = "role " + role.name
+
     override fun toLong(): Long = role.longID
 
     override fun appliesToUser(user: IUser, guild: IGuild): Boolean {

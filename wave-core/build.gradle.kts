@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    compile(kotlin("stdlib"))
+    compile(kotlin("stdlib-jdk8"))
 
     compile("com.discord4j:Discord4J:2.10.1")
     compile("org.mapdb:mapdb:3.0.7")

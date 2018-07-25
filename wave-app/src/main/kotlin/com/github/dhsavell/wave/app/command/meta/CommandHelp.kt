@@ -34,6 +34,7 @@ class CommandHelp : ArgParserCommand<CommandHelp.Args> {
                 message.channel.sendEmbed {
                     title { command.name }
                     description { "Basic usage is provided below. For more information, see the online documentation." }
+                    section("Permission", bot.permissionManager.getEffectivePermission(command, message.guild).name)
                     section("Usage", "```${c.usageMessage}```")
                 }
             }

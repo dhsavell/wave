@@ -14,7 +14,7 @@ application {
 
 dependencies {
     compile(project(":wave-core"))
-    compile(kotlin("stdlib"))
+    compile(kotlin("stdlib-jdk8"))
 
     compile("io.github.microutils:kotlin-logging:1.5.4")
     implementation("ch.qos.logback:logback-classic:1.2.3")
