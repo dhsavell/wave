@@ -1,6 +1,7 @@
 package com.github.dhsavell.wave.core.command
 
 import com.github.dhsavell.wave.core.bot.Bot
+import com.github.dhsavell.wave.core.testutil.StubBot
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import io.kotlintest.shouldBe
@@ -41,7 +42,7 @@ class TestCommand(private val onInvoked: (Args) -> Unit) : ArgParserCommand<Test
 }
 
 class ArgParserCommandTest : StringSpec({
-    val mockBot = Bot(mock(), mock(), "", mock(), mock(), mock())
+    val mockBot = StubBot()
 
     "Parameters can be passed to an ArgParserCommand" {
         val command = TestCommand { args ->
@@ -81,11 +82,5 @@ class ArgParserCommandTest : StringSpec({
         command(mockBot, mock(), mockMessage, listOf("test", "1", "2", "3", "-u", "bar"))
         command(mockBot, mock(), mockMessage, listOf("test", "1", "2", "3", "-u", "200000000000000000"))
         command(mockBot, mock(), mockMessage, listOf("test", "1", "2", "3", "-u", "<@200000000000000000>"))
-    }
-
-    "Command fails on invalid arguments" {
-        val command = TestCommand { }
-
-        command(mockBot, mock(), mock(), listOf("invalid", "arguments")) shouldBe CommandFailed
     }
 })

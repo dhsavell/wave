@@ -14,6 +14,8 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 import java.awt.Color
+import javax.inject.Inject
+import javax.inject.Named
 
 object BotColors {
     val INFO = Color(0x45a1ff)
@@ -22,17 +24,20 @@ object BotColors {
     val SUCCESS = Color(0x30e60b)
 }
 
-class Bot(val client: IDiscordClient,
-          val logger: Logger,
-          private val defaultPrefix: String,
-          private val db: DB,
-          val commandManager: CommandManager,
-          val conversationManager: ConversationManager,
-          val permissionManager: PermissionManager) {
+/**
+ * Class representing a bot that ties together a CommandManager, ConversationManager, and PermissionManager. Constructor
+ * is injectable with the prefix being named "prefix".
+ */
+open class Bot @Inject constructor(val client: IDiscordClient,
+                                   val logger: Logger,
+                                   @Named("prefix") private val defaultPrefix: String,
+                                   private val db: DB,
+                                   val commandManager: CommandManager,
+                                   val conversationManager: ConversationManager,
+                                   val permissionManager: PermissionManager) {
 
     init {
-        val dispatcher = client.dispatcher
-        dispatcher.registerListener(this)
+        client.dispatcher.registerListener(this)
     }
 
     fun runForever() {

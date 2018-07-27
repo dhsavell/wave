@@ -1,9 +1,6 @@
 package com.github.dhsavell.wave.core.util
 
-import sx.blah.discord.handle.obj.IChannel
-import sx.blah.discord.handle.obj.IGuild
-import sx.blah.discord.handle.obj.IRole
-import sx.blah.discord.handle.obj.IUser
+import sx.blah.discord.handle.obj.*
 
 const val DISCORD_ID_LENGTH = 18
 
@@ -57,3 +54,5 @@ fun String.toRoleFromIdentifier(guild: IGuild): IRole? = identifierGetter(
         this, { name -> guild.roles.find { it.name.startsWith(name, true) } },
         String::toRoleIDFromMention, guild::getRoleByID
 )
+
+fun String.toMessageFromID(channel: IChannel): IMessage? = toLongOrNull()?.let { channel.getMessageByID(it) }

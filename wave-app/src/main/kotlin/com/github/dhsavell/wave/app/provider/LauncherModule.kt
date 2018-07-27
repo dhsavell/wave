@@ -1,8 +1,5 @@
-package com.github.dhsavell.wave.app
+package com.github.dhsavell.wave.app.provider
 
-import com.github.dhsavell.wave.app.provider.BotModule
-import com.github.dhsavell.wave.app.provider.DaggerBotComponent
-import com.github.dhsavell.wave.app.provider.ManagerModule
 import dagger.Module
 import dagger.Provides
 import mu.KotlinLogging
@@ -10,6 +7,8 @@ import org.mapdb.DB
 import org.mapdb.DBMaker
 import org.slf4j.Logger
 import picocli.CommandLine
+import sx.blah.discord.api.ClientBuilder
+import sx.blah.discord.api.IDiscordClient
 import java.io.File
 import java.util.concurrent.Callable
 import javax.inject.Named
@@ -55,9 +54,13 @@ class LauncherModule : Callable<Unit> {
         return KotlinLogging.logger("wave")
     }
 
+    @Provides
+    fun provideClient(@Named("token") token: String): IDiscordClient {
+        return ClientBuilder().withToken(token).withRecommendedShardCount().build()
+    }
+
     override fun call() {
         val bot = DaggerBotComponent.builder()
-                .botModule(BotModule())
                 .managerModule(ManagerModule())
                 .launcherModule(this)
                 .build()
