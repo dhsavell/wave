@@ -2,18 +2,12 @@ package com.github.dhsavell.wave.core.data
 
 import org.mapdb.DB
 import org.mapdb.Serializer
-import sx.blah.discord.handle.obj.IChannel
-import sx.blah.discord.handle.obj.IGuild
 import sx.blah.discord.handle.obj.IIDLinkedObject
-import sx.blah.discord.handle.obj.IUser
 
 /**
  * A DomainProperty for storing an IDLinkedObject (i.e. Discord4J objects such as IUser, IChannel...) within an IGuild.
- * Ideally, one of the predefined implementations should be used.
  *
- * @see IDLinkedArrayProperty
- * @see GuildUserProperty
- * @see GuildChannelProperty
+ * @see IDLinkedListProperty
  * @param K Domain this property will be accessed from.
  * @param V Type being stored in this property.
  * @param name Name of this property, used in storage.
@@ -35,18 +29,16 @@ open class IDLinkedProperty<K : IIDLinkedObject, V : IIDLinkedObject>(override v
 }
 
 /**
- * A DomainProperty for storing an Array of IDLinkedObjects within an IGuild.
+ * A DomainProperty for storing an List of IDLinkedObjects within an IGuild. This has nothing to do with linked lists.
  *
  * @see IDLinkedProperty
- * @see GuildUserArrayProperty
- * @see GuildChannelArrayProperty
  * @param K Domain this property will be accessed from.
  * @param V Type being stored in this property.
  * @param name Name of this property, used in storage.
  * @param transformer Function to restore an object from its Long ID.
  */
-open class IDLinkedArrayProperty<K : IIDLinkedObject, V : IIDLinkedObject>(override val name: String,
-                                                                           private val transformer: (K) -> (Long) -> V) : DomainProperty<K, List<V>> {
+open class IDLinkedListProperty<K : IIDLinkedObject, V : IIDLinkedObject>(override val name: String,
+                                                                          private val transformer: (K) -> (Long) -> V) : DomainProperty<K, List<V>> {
     override fun getPropertyValue(db: DB, domain: K): List<V>? {
         val map = db.hashMap(name, Serializer.LONG, Serializer.LONG_ARRAY).createOrOpen()
         val ids = map[domain.longID]
@@ -68,28 +60,3 @@ open class IDLinkedArrayProperty<K : IIDLinkedObject, V : IIDLinkedObject>(overr
         }
     }
 }
-
-
-/**
- * An IDLinkedProperty for storing an IUser within an IGuild.
- */
-data class GuildUserProperty(override val name: String) : IDLinkedProperty<IGuild, IUser>(name,
-        { guild -> guild::getUserByID })
-
-/**
- * An IDLinkedProperty for storing an array of IUsers.
- */
-data class GuildUserArrayProperty(override val name: String) : IDLinkedArrayProperty<IGuild, IUser>(name,
-        { guild -> guild::getUserByID })
-
-/**
- * An IDLinkedProperty for storing an IChannel within an IGuild.
- */
-data class GuildChannelProperty(override val name: String) : IDLinkedProperty<IGuild, IChannel>(name,
-        { guild -> guild::getChannelByID })
-
-/**
- * An IDLinkedProperty for storing an array of IChannels.
- */
-data class GuildChannelArrayProperty(override val name: String) : IDLinkedArrayProperty<IGuild, IChannel>(name,
-        { guild -> guild::getChannelByID })
