@@ -1,5 +1,7 @@
 <p align="center">
     <img src="./assets/wave-logo-text-2000.png" height="70px"/>
+    <br/><br/>
+    <a href="https://codeclimate.com/github/dhsavell/wave/maintainability"><img src="https://api.codeclimate.com/v1/badges/cef270fec0ece8f7bac8/maintainability" /></a>
 </p>
 
 # wave
