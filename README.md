@@ -1,10 +1,13 @@
+<p align="center">
+    <img src="./assets/wave-logo-text-2000.png" height="70px"/>
+</p>
+
 # wave
 
 > A Discord bot focused on server administration.
 
 Wave is an advanced administration bot that is easily approachable yet very
-powerful. There is currently no official public instance, however there will
-be eventually.
+powerful. There is currently no official public instance.
 
 ## Getting Started
 
