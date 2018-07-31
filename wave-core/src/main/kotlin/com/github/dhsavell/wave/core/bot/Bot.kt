@@ -31,7 +31,7 @@ object BotColors {
 open class Bot @Inject constructor(val client: IDiscordClient,
                                    val logger: Logger,
                                    @Named("prefix") private val defaultPrefix: String,
-                                   private val db: DB,
+                                   internal val db: DB,
                                    val commandManager: CommandManager,
                                    val conversationManager: ConversationManager,
                                    val permissionManager: PermissionManager) {

@@ -10,9 +10,9 @@ import org.mapdb.DBMaker
 import org.slf4j.LoggerFactory
 import sx.blah.discord.api.ClientBuilder
 
-class StubBot(commands: List<Command> = emptyList(), db: DB = DBMaker.memoryDB().make()) :
+class DummyBot(commands: List<Command> = emptyList(), db: DB = DBMaker.memoryDB().make()) :
         Bot(ClientBuilder().withToken("this is an invalid token").build(),
-                LoggerFactory.getLogger(StubBot::class.java), "",
+                LoggerFactory.getLogger(DummyBot::class.java), "",
                 DBMaker.memoryDB().make(),
                 CommandManager(commands),
                 ConversationManager(),

@@ -1,8 +1,6 @@
 package com.github.dhsavell.wave.app
 
 import com.github.dhsavell.wave.app.provider.LauncherModule
-import picocli.CommandLine
+import com.xenomachina.argparser.ArgParser
 
-fun main(args: Array<String>) {
-    CommandLine.call(LauncherModule(), *args)
-}
+fun main(args: Array<String>) = ArgParser(args).parseInto(::LauncherModule).createAndRunBot()

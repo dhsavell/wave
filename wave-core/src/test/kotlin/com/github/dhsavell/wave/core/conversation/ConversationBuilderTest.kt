@@ -17,7 +17,7 @@ class ConversationBuilderTest : StringSpec({
         }
 
         val mockMessage = mock<IMessage> {
-            on { content } doReturn "content"
+            on { content } doReturn "dummyContent"
         }
 
         val firstResult = firstPrompt.handleResponse(mockMessage, mapOf())
@@ -47,8 +47,8 @@ class ConversationBuilderTest : StringSpec({
     "Conversation prompts can execute an action when responded to" {
         var testString = "not changed"
         val prompt = conversation {
-            ask("After being responded to, this prompt will set testString to the response content.") {
-                storeResultAs("content")
+            ask("After being responded to, this prompt will set testString to the response dummyContent.") {
+                storeResultAs("dummyContent")
                 afterResponse { message, _ ->
                     testString = message.content
                 }

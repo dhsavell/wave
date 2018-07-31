@@ -1,32 +1,24 @@
 package com.github.dhsavell.wave.app.provider
 
+import com.xenomachina.argparser.ArgParser
+import com.xenomachina.argparser.default
 import dagger.Module
 import dagger.Provides
 import mu.KotlinLogging
 import org.mapdb.DB
 import org.mapdb.DBMaker
 import org.slf4j.Logger
-import picocli.CommandLine
 import sx.blah.discord.api.ClientBuilder
 import sx.blah.discord.api.IDiscordClient
 import java.io.File
-import java.util.concurrent.Callable
 import javax.inject.Named
 
 @Module
-@CommandLine.Command(name = "wave")
-class LauncherModule : Callable<Unit> {
-    @CommandLine.Option(names = ["--token", "-t"], required = true, description = ["bot account token"])
-    private lateinit var token: String
-
-    @CommandLine.Option(names = ["--db-path", "-d"], description = ["db file path"])
-    private var dbPath: File = File("./wave.mapdb")
-
-    @CommandLine.Option(names = ["--use-memory-db", "-m"], description = ["use an in-memory database"])
-    private var useMemoryDB: Boolean = false
-
-    @CommandLine.Option(names = ["--prefix", "-p"], description = ["command prefix"])
-    private var prefix = "w."
+class LauncherModule(parser: ArgParser) {
+    private val token by parser.storing("token to run the bot with")
+    private val dbPath by parser.storing("path to the database") { File(this) }.default(File("./wave.mapdb"))
+    private val useMemoryDB by parser.flagging("whether or not data should be kept in memory").default(false)
+    private val prefix by parser.storing("bot command prefix").default("w.")
 
     @Provides
     @Named("token")
@@ -59,7 +51,7 @@ class LauncherModule : Callable<Unit> {
         return ClientBuilder().withToken(token).withRecommendedShardCount().build()
     }
 
-    override fun call() {
+    fun createAndRunBot() {
         val bot = DaggerBotComponent.builder()
                 .managerModule(ManagerModule())
                 .launcherModule(this)

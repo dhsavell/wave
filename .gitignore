@@ -3,6 +3,8 @@
 /build/
 /.gradle
 
+_docpress
+
 .DS_Store
 
 gradle-app.setting

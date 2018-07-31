@@ -1,48 +1,41 @@
 package com.github.dhsavell.wave.core.command
 
 import com.github.dhsavell.wave.core.bot.Bot
-import com.github.dhsavell.wave.core.testutil.StubBot
+import com.github.dhsavell.wave.core.testutil.DummyBot
+import com.github.dhsavell.wave.core.util.toUserFromIdentifier
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
+import com.xenomachina.argparser.ArgParser
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import org.mapdb.DB
-import picocli.CommandLine
 import sx.blah.discord.handle.obj.IGuild
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IUser
 
-class TestCommand(private val onInvoked: (Args) -> Unit) : ArgParserCommand<TestCommand.Args> {
-    override fun get(): Args = Args()
+object TestCategory : Category {
+    override val name: String = ""
+    override val description: String = ""
+}
 
-    override fun invokeWithArgs(bot: Bot, db: DB, message: IMessage, args: Args): CommandResult {
+class TestCommand(private val onInvoked: (Args) -> Unit) : ArgParserCommand<TestCommand.Args>("test", TestCategory) {
+    override fun createArgsObject(parser: ArgParser, context: IMessage): Args = Args(parser, context.guild)
+
+    override fun invoke(bot: Bot, db: DB, message: IMessage, args: Args): CommandResult {
         onInvoked(args)
-        return CommandSucceededWithValue(args.message)
+        return CommandSucceeded
     }
 
-    override val name: String = "test"
-    override val category: Category = object : Category {
-        override val name: String = ""
-        override val description: String = ""
-    }
-
-    class Args {
-        @CommandLine.Parameters(index = "0")
-        lateinit var message: String
-
-        @CommandLine.Parameters(index = "1..*")
-        lateinit var ints: Array<Int>
-
-        @CommandLine.Option(names = ["-f"])
-        var flag: Boolean = false
-
-        @CommandLine.Option(names = ["-u"])
-        lateinit var user: IUser
+    class Args(parser: ArgParser, guild: IGuild) {
+        val message by parser.storing("an arbitrary string message")
+        val ints by parser.positionalList("a list of some ints")
+        val flag by parser.flagging("a boolean flag")
+        val user by parser.storing("a discord user") { toUserFromIdentifier(guild) }
     }
 }
 
 class ArgParserCommandTest : StringSpec({
-    val mockBot = StubBot()
+    val mockBot = DummyBot()
 
     "Parameters can be passed to an ArgParserCommand" {
         val command = TestCommand { args ->
@@ -52,6 +45,11 @@ class ArgParserCommandTest : StringSpec({
         }
 
         command(mockBot, mock(), mock(), listOf("test", "1", "2", "3"))
+    }
+
+    "Command fails when invalid parameters are passed" {
+        val command = TestCommand { }
+        command(mockBot, mockBot.db, mock(), listOf("test", "sdgfdfs", "--sdfarg", "Asdfrg")) shouldBe CommandFailed
     }
 
     "Discord4J types can be parsed" {
