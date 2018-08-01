@@ -19,7 +19,7 @@ object TestCategory : Category {
 }
 
 class TestCommand(private val onInvoked: (Args) -> Unit) : ArgParserCommand<TestCommand.Args>("test", TestCategory) {
-    override fun createArgsObject(parser: ArgParser, context: IMessage): Args = Args(parser, context.guild)
+    override fun createArgsObject(parser: ArgParser, bot: Bot, context: IMessage): Args = Args(parser, context.guild)
 
     override fun invoke(bot: Bot, db: DB, message: IMessage, args: Args): CommandResult {
         onInvoked(args)
@@ -50,6 +50,11 @@ class ArgParserCommandTest : StringSpec({
     "Command fails when invalid parameters are passed" {
         val command = TestCommand { }
         command(mockBot, mockBot.db, mock(), listOf("test", "sdgfdfs", "--sdfarg", "Asdfrg")) shouldBe CommandFailed
+    }
+
+    "Command fails when an argument can't be parsed" {
+        val command = TestCommand { }
+        command(mockBot, mockBot.db, mock(), listOf("test", "1", "-u", "not-a-user")) shouldBe CommandFailed
     }
 
     "Discord4J types can be parsed" {

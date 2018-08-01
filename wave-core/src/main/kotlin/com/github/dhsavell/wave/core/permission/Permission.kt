@@ -28,7 +28,7 @@ sealed class Permission(open val name: String) {
             }
         }
 
-        fun fromString(string: String, guild: IGuild): Permission? {
+        fun fromString(string: String, guild: IGuild): Permission {
             return when (string.toLowerCase().trim()) {
                 AnybodyCanUse.name -> AnybodyCanUse
                 NobodyCanUse.name -> NobodyCanUse
@@ -38,7 +38,7 @@ sealed class Permission(open val name: String) {
                     return if (givenRole != null) {
                         MembersWithRoleCanUse(givenRole)
                     } else {
-                        null
+                        throw IllegalArgumentException("Invalid permission name.")
                     }
                 }
             }

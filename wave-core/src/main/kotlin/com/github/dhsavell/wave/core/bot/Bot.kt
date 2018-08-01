@@ -45,6 +45,7 @@ open class Bot @Inject constructor(val client: IDiscordClient,
     }
 
     @EventSubscriber
+    @Suppress("unused_parameter")
     fun onReady(event: ReadyEvent) {
         logger.info("Logged in as ${client.ourUser.name}#${client.ourUser.discriminator} (${client.ourUser.stringID})")
         logger.info("Servers: ${client.guilds.size}")
