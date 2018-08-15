@@ -30,8 +30,8 @@ class ConversationBuilder internal constructor(conversationInit: ConversationBui
             promptInit()
         }
 
-        fun storeResultAs(name: String) {
-            this.name = name
+        fun storeResultAs(name: () -> String) {
+            this.name = name()
         }
 
         fun afterResponse(handler: (IMessage, Map<String, String>) -> Unit) {

@@ -39,9 +39,8 @@ interface Command {
 
     /**
      * Invokes this command.
-     * @param db MapDB instance.
      * @param message Message containing the command invocation.
      * @return Whether or not the command was executed successfully.
      */
-    operator fun invoke(bot: Bot, db: DB, message: IMessage, args: List<String>): CommandResult
+    operator fun invoke(bot: Bot, message: IMessage, args: List<String>): CommandResult
 }

@@ -8,7 +8,6 @@ import com.github.dhsavell.wave.core.command.Category
 import com.github.dhsavell.wave.core.command.Command
 import com.github.dhsavell.wave.core.command.CommandResult
 import com.github.dhsavell.wave.core.command.CommandSucceeded
-import org.mapdb.DB
 import sx.blah.discord.handle.obj.IMessage
 
 @CommandProvider
@@ -16,7 +15,7 @@ class CommandHelp : Command {
     override val name: String = "help"
     override val category: Category = Meta
 
-    override fun invoke(bot: Bot, db: DB, message: IMessage, args: List<String>): CommandResult {
+    override fun invoke(bot: Bot, message: IMessage, args: List<String>): CommandResult {
         message.channel.sendEmbed {
             title { "Help" }
             description {

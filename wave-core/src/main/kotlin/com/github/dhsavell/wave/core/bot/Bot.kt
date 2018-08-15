@@ -35,12 +35,8 @@ open class Bot @Inject constructor(val client: IDiscordClient,
                                    val commandManager: CommandManager,
                                    val conversationManager: ConversationManager,
                                    val permissionManager: PermissionManager) {
-
-    init {
-        client.dispatcher.registerListener(this)
-    }
-
     fun runForever() {
+        client.dispatcher.registerListener(this)
         client.login()
     }
 
@@ -55,23 +51,26 @@ open class Bot @Inject constructor(val client: IDiscordClient,
     @EventSubscriber
     fun onMessageSent(event: MessageReceivedEvent) {
         val message = event.message
+        val channel = message.channel
+
+        if (message.author == client.ourUser) {
+            return
+        }
 
         when {
-            message.author == client.ourUser -> return
-            message.channel.isPrivate -> message.channel.sendError("Wave is currently not available for direct messages.")
+            channel.isPrivate -> channel.sendError("Wave is currently not available for direct messages.")
             conversationManager.isResponse(message) -> conversationManager.handleResponse(message)
             message.content.startsWith(defaultPrefix, true) -> {
-                logger.debug("command")
                 val commandCall = message.content.substring(defaultPrefix.length)
                 val command = commandManager.getCommandFromCall(commandCall)
                 if (command != null) {
                     if (permissionManager.userCanInvoke(command, message.author, message.guild)) {
-                        command(this, db, message, commandCall.split(" ").drop(1))
+                        command(this, message, commandManager.getArgumentsFromCall(commandCall))
                     } else {
-                        message.channel.sendError("You don't have permission to use this command.")
+                        channel.sendError("You don't have permission to use this command.")
                     }
                 } else {
-                    message.channel.sendError("Unknown command.")
+                    channel.sendError("Unknown command.")
                 }
             }
         }
@@ -81,7 +80,6 @@ open class Bot @Inject constructor(val client: IDiscordClient,
 fun IChannel.sendEmbed(initBlock: DslEmbedBuilder.() -> Unit): IMessage {
     return sendMessage(embed(initBlock))
 }
-
 
 fun IChannel.sendInfo(message: String): IMessage = sendEmbed {
     title { message }

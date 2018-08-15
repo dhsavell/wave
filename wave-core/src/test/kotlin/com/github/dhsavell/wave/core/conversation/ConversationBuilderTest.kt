@@ -12,8 +12,13 @@ import sx.blah.discord.handle.obj.IMessage
 class ConversationBuilderTest : StringSpec({
     "Conversation prompts can be chained" {
         val firstPrompt = conversation {
-            ask("What is your name?") { storeResultAs("name") }
-            ask("What is your quest?") { storeResultAs("quest") }
+            ask("What is your name?") {
+                storeResultAs { "name" }
+            }
+
+            ask("What is your quest?") {
+                storeResultAs { "quest" }
+            }
         }
 
         val mockMessage = mock<IMessage> {
@@ -30,7 +35,7 @@ class ConversationBuilderTest : StringSpec({
     "Conversation prompts with validation request to be repeated upon failure" {
         val prompt = conversation {
             ask("This prompt will fail unless you enter a lowercase `a`.") {
-                storeResultAs("letter")
+                storeResultAs { "letter" }
                 withValidation { message, _ ->
                     message.content.equals("a", true)
                 }
@@ -48,7 +53,7 @@ class ConversationBuilderTest : StringSpec({
         var testString = "not changed"
         val prompt = conversation {
             ask("After being responded to, this prompt will set testString to the response dummyContent.") {
-                storeResultAs("dummyContent")
+                storeResultAs { "dummyContent" }
                 afterResponse { message, _ ->
                     testString = message.content
                 }

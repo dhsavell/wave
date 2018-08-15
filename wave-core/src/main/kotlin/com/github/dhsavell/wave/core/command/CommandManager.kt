@@ -4,7 +4,7 @@ package com.github.dhsavell.wave.core.command
  * A class for containing and managing commands.
  * @param commands Available commands.
  */
-class CommandManager(val commands: List<Command>) {
+class CommandManager(private val commands: List<Command>) {
 
     /**
      * Gets a command from a given call.
@@ -22,12 +22,5 @@ class CommandManager(val commands: List<Command>) {
         }
 
         return commandMatch.firstOrNull()
-    }
-
-    /**
-     * Gets arguments from a given call.
-     */
-    fun getArgumentsFromCall(commandCall: String): Array<String> {
-        return commandCall.split(" ").drop(1).toTypedArray()
     }
 }

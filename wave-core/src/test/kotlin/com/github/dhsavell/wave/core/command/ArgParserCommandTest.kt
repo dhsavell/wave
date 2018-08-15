@@ -8,7 +8,6 @@ import com.nhaarman.mockitokotlin2.mock
 import com.xenomachina.argparser.ArgParser
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
-import org.mapdb.DB
 import sx.blah.discord.handle.obj.IGuild
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IUser
@@ -21,7 +20,7 @@ object TestCategory : Category {
 class TestCommand(private val onInvoked: (Args) -> Unit) : ArgParserCommand<TestCommand.Args>("test", TestCategory) {
     override fun createArgsObject(parser: ArgParser, bot: Bot, context: IMessage): Args = Args(parser, context.guild)
 
-    override fun invoke(bot: Bot, db: DB, message: IMessage, args: Args): CommandResult {
+    override fun invoke(bot: Bot, message: IMessage, args: Args): CommandResult {
         onInvoked(args)
         return CommandSucceeded
     }
@@ -44,17 +43,17 @@ class ArgParserCommandTest : StringSpec({
             args.flag shouldBe false
         }
 
-        command(mockBot, mock(), mock(), listOf("test", "1", "2", "3"))
+        command(mockBot, mock(), listOf("test", "1", "2", "3"))
     }
 
     "Command fails when invalid parameters are passed" {
         val command = TestCommand { }
-        command(mockBot, mockBot.db, mock(), listOf("test", "sdgfdfs", "--sdfarg", "Asdfrg")) shouldBe CommandFailed
+        command(mockBot, mock(), listOf("test", "sdgfdfs", "--sdfarg", "Asdfrg")) shouldBe CommandFailed
     }
 
     "Command fails when an argument can't be parsed" {
         val command = TestCommand { }
-        command(mockBot, mockBot.db, mock(), listOf("test", "1", "-u", "not-a-user")) shouldBe CommandFailed
+        command(mockBot, mock(), listOf("test", "1", "-u", "not-a-user")) shouldBe CommandFailed
     }
 
     "Discord4J types can be parsed" {
@@ -82,8 +81,8 @@ class ArgParserCommandTest : StringSpec({
             args.user shouldBe mockUser2
         }
 
-        command(mockBot, mock(), mockMessage, listOf("test", "1", "2", "3", "-u", "bar"))
-        command(mockBot, mock(), mockMessage, listOf("test", "1", "2", "3", "-u", "200000000000000000"))
-        command(mockBot, mock(), mockMessage, listOf("test", "1", "2", "3", "-u", "<@200000000000000000>"))
+        command(mockBot, mockMessage, listOf("test", "1", "2", "3", "-u", "bar"))
+        command(mockBot, mockMessage, listOf("test", "1", "2", "3", "-u", "200000000000000000"))
+        command(mockBot, mockMessage, listOf("test", "1", "2", "3", "-u", "<@200000000000000000>"))
     }
 })
