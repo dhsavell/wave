@@ -58,6 +58,7 @@ open class Bot @Inject constructor(val client: IDiscordClient,
 
         when {
             message.author == client.ourUser -> return
+            message.channel.isPrivate -> message.channel.sendError("Wave is currently not available for direct messages.")
             conversationManager.isResponse(message) -> conversationManager.handleResponse(message)
             message.content.startsWith(defaultPrefix, true) -> {
                 logger.debug("command")

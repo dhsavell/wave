@@ -17,18 +17,18 @@ abstract class ArgParserCommand<T>(override val name: String, override val categ
             val parsedArgs = ArgParser(args.toTypedArray()).parseInto { createArgsObject(it, bot, message) }
             invoke(bot, db, message, parsedArgs)
         } catch (e: ShowHelpException) {
-            message.channel.sendEmbed {
+            message.channel?.sendEmbed {
                 color { BotColors.SUCCESS }
                 title { "Help for `$name`" }
 
-                // The repeated period prefix is a bit of a hack, but it allows our code block on Discord to render wide
+                // The repeated period suffix is a bit of a hack, but it allows our code block on Discord to render wide
                 // enough to display the entire help message on all (tested) devices.
                 description { "```${e.getMessageText(name)}" + "\n" + ".".repeat(60) + "```" }
             }
 
             CommandSucceeded
         } catch (e: SystemExitException) {
-            message.channel.sendEmbed {
+            message.channel?.sendEmbed {
                 color { BotColors.ERROR }
                 title { "Invalid arguments!" }
                 description { e.getMessageText(name) }
@@ -36,7 +36,7 @@ abstract class ArgParserCommand<T>(override val name: String, override val categ
 
             CommandFailed
         } catch (e: Exception) {
-            message.channel.sendEmbed {
+            message.channel?.sendEmbed {
                 color { BotColors.ERROR }
                 title { "Invalid argument value!" }
                 description { e.message ?: "No information available." }
