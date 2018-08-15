@@ -31,7 +31,7 @@ object BotColors {
 open class Bot @Inject constructor(val client: IDiscordClient,
                                    val logger: Logger,
                                    @Named("prefix") private val defaultPrefix: String,
-                                   private val db: DB,
+                                   internal val db: DB,
                                    val commandManager: CommandManager,
                                    val conversationManager: ConversationManager,
                                    val permissionManager: PermissionManager) {
@@ -45,6 +45,7 @@ open class Bot @Inject constructor(val client: IDiscordClient,
     }
 
     @EventSubscriber
+    @Suppress("unused_parameter")
     fun onReady(event: ReadyEvent) {
         logger.info("Logged in as ${client.ourUser.name}#${client.ourUser.discriminator} (${client.ourUser.stringID})")
         logger.info("Servers: ${client.guilds.size}")
@@ -57,6 +58,7 @@ open class Bot @Inject constructor(val client: IDiscordClient,
 
         when {
             message.author == client.ourUser -> return
+            message.channel.isPrivate -> message.channel.sendError("Wave is currently not available for direct messages.")
             conversationManager.isResponse(message) -> conversationManager.handleResponse(message)
             message.content.startsWith(defaultPrefix, true) -> {
                 logger.debug("command")

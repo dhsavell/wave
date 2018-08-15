@@ -4,53 +4,28 @@ import com.github.dhsavell.wave.app.command.Meta
 import com.github.dhsavell.wave.app.provider.CommandProvider
 import com.github.dhsavell.wave.core.bot.Bot
 import com.github.dhsavell.wave.core.bot.sendEmbed
-import com.github.dhsavell.wave.core.bot.sendError
-import com.github.dhsavell.wave.core.bot.sendInfo
-import com.github.dhsavell.wave.core.command.*
-import com.github.dhsavell.wave.core.permission.AnybodyCanUse
-import com.github.dhsavell.wave.core.permission.Permission
+import com.github.dhsavell.wave.core.command.Category
+import com.github.dhsavell.wave.core.command.Command
+import com.github.dhsavell.wave.core.command.CommandResult
+import com.github.dhsavell.wave.core.command.CommandSucceeded
 import org.mapdb.DB
-import picocli.CommandLine
 import sx.blah.discord.handle.obj.IMessage
 
 @CommandProvider
-class CommandHelp : ArgParserCommand<CommandHelp.Args> {
+class CommandHelp : Command {
     override val name: String = "help"
-    override val aliases: Array<String> = arrayOf("h")
     override val category: Category = Meta
-    override val defaultPermission: Permission = AnybodyCanUse
-    override fun get(): Args = Args()
 
-    override fun invokeWithArgs(bot: Bot, db: DB, message: IMessage, args: Args): CommandResult {
-        val command = bot.commandManager.getCommandFromCall(args.commandName)
-        if (command == null) {
-            message.channel.sendError("No commands named `${args.commandName}`.")
-            return CommandFailed
-        }
-
-        when (command) {
-            is ArgParserCommand<*> -> {
-                val c = CommandLine(command.get())
-                message.channel.sendEmbed {
-                    title { command.name }
-                    description { "Basic usage is provided below. For more information, see the online documentation." }
-                    section("Permission",
-                            "`${bot.permissionManager.getEffectivePermission(command, message.guild).name}`")
-                    section("Usage", "```${c.usageMessage}```")
-                }
-            }
-
-            else -> {
-                message.channel.sendInfo("See the online documentation for information about this command.")
+    override fun invoke(bot: Bot, db: DB, message: IMessage, args: List<String>): CommandResult {
+        message.channel.sendEmbed {
+            title { "Help" }
+            description {
+                "To get help for a command, use the following syntax: `<command> --help`\n" +
+                        "For a list of commands, see the online documentation."
             }
         }
 
         return CommandSucceeded
     }
 
-    @CommandLine.Command(description = ["displays a usage message for a command"])
-    class Args {
-        @CommandLine.Parameters(index = "0", description = ["command to get help for"])
-        lateinit var commandName: String
-    }
 }

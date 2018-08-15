@@ -1,7 +1,14 @@
-/.idea/
+.idea/
+build/
+out/
+.gradle/
+
+docs/
+
 *.iml
-/build/
-/.gradle
+*.mapdb
+
+_docpress
 
 .DS_Store
 

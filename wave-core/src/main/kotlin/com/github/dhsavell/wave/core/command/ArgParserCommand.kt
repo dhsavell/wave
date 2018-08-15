@@ -3,53 +3,63 @@ package com.github.dhsavell.wave.core.command
 import com.github.dhsavell.wave.core.bot.Bot
 import com.github.dhsavell.wave.core.bot.BotColors
 import com.github.dhsavell.wave.core.bot.sendEmbed
-import com.github.dhsavell.wave.core.permission.Permission
-import com.github.dhsavell.wave.core.util.toChannelFromIdentifier
-import com.github.dhsavell.wave.core.util.toMessageFromID
-import com.github.dhsavell.wave.core.util.toRoleFromIdentifier
-import com.github.dhsavell.wave.core.util.toUserFromIdentifier
+import com.xenomachina.argparser.*
 import org.mapdb.DB
-import picocli.CommandLine
-import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
-import sx.blah.discord.handle.obj.IRole
-import sx.blah.discord.handle.obj.IUser
-import java.util.function.Supplier
+import java.io.StringWriter
 
-interface ArgParserCommand<T> : Command, Supplier<T> {
-
-    fun invokeWithArgs(bot: Bot, db: DB, message: IMessage, args: T): CommandResult
+abstract class ArgParserCommand<T>(override val name: String, override val category: Category) : Command {
+    abstract fun createArgsObject(parser: ArgParser, bot: Bot, context: IMessage): T
+    abstract fun invoke(bot: Bot, db: DB, message: IMessage, args: T): CommandResult
 
     override fun invoke(bot: Bot, db: DB, message: IMessage, args: List<String>): CommandResult {
         return try {
-            val parser = createParser(bot, message)
-            val argsObject = parser.parse(*args.toTypedArray())[0].getCommand<T>()
-            invokeWithArgs(bot, db, message, argsObject)
-        } catch (e: CommandLine.ParameterException) {
-            message.channel.sendEmbed {
-                title { "Invalid arguments for `$name`" }
+            val parsedArgs = ArgParser(args.toTypedArray()).parseInto { createArgsObject(it, bot, message) }
+            invoke(bot, db, message, parsedArgs)
+        } catch (e: ShowHelpException) {
+            message.channel?.sendEmbed {
+                color { BotColors.SUCCESS }
+                title { "Help for `$name`" }
+
+                // The repeated period suffix is a bit of a hack, but it allows our code block on Discord to render wide
+                // enough to display the entire help message on all (tested) devices.
+                description { "```${e.getMessageText(name)}" + "\n" + ".".repeat(60) + "```" }
+            }
+
+            CommandSucceeded
+        } catch (e: SystemExitException) {
+            message.channel?.sendEmbed {
                 color { BotColors.ERROR }
-                description { e.value ?: "```${e.commandLine.usageMessage}```" }
+                title { "Invalid arguments!" }
+                description { e.getMessageText(name) }
+            }
+
+            CommandFailed
+        } catch (e: Exception) {
+            message.channel?.sendEmbed {
+                color { BotColors.ERROR }
+                title { "Invalid argument value!" }
+                description { e.message ?: "No information available." }
             }
 
             CommandFailed
         }
     }
+}
 
-    private fun createParser(bot: Bot, message: IMessage): CommandLine {
-        val parser = CommandLine(get())
-        val guild = message.guild
-
-        parser.registerConverter(IUser::class.java) { string -> string.toUserFromIdentifier(guild) }
-        parser.registerConverter(IChannel::class.java) { string -> string.toChannelFromIdentifier(guild) }
-        parser.registerConverter(IRole::class.java) { string -> string.toRoleFromIdentifier(guild) }
-        parser.registerConverter(Command::class.java, bot.commandManager::getCommandFromCall)
-        parser.registerConverter(IMessage::class.java) { string -> string.toMessageFromID(message.channel) }
-        parser.registerConverter(Permission::class.java) { string ->
-            Permission.fromString(string, guild)
-                    ?: throw CommandLine.ParameterException(parser, "Invalid permission.")
+fun SystemExitException.getMessageText(name: String, columns: Int = 55): String {
+    return when (this) {
+        is UnrecognizedOptionException -> "Unknown option `$optName`."
+        is MissingValueException -> "No value specified for `$valueName`."
+        is OptionMissingRequiredArgumentException -> "The option `$optName` is missing a required value."
+        is MissingRequiredPositionalArgumentException -> "An argument for `$argName` is missing."
+        is UnexpectedOptionArgumentException -> "The option `$optName` doesn't need an argument."
+        is UnexpectedPositionalArgumentException -> "The argument `$valueName` is misplaced or invalid."
+        else -> {
+            val writer = StringWriter()
+            printUserMessage(writer, name, columns)
+            writer.toString()
         }
-
-        return parser
     }
 }
+
