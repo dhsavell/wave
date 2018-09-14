@@ -13,8 +13,10 @@ import sx.blah.discord.handle.obj.IIDLinkedObject
  * @param name Name of this property, used in storage.
  * @param transformer Function to restore an object from its Long ID.
  */
-open class IDLinkedProperty<K : IIDLinkedObject, V : IIDLinkedObject>(override val name: String,
-                                                                      private val transformer: (K) -> (Long) -> V) : DomainProperty<K, V> {
+open class IDLinkedProperty<K : IIDLinkedObject, V : IIDLinkedObject>(
+    override val name: String,
+    private val transformer: (K) -> (Long) -> V
+) : DomainProperty<K, V> {
     override fun getPropertyValue(db: DB, domain: K): V? {
         val map = db.hashMap(name, Serializer.LONG, Serializer.LONG).createOrOpen()
         val id = map[domain.longID]
@@ -37,8 +39,10 @@ open class IDLinkedProperty<K : IIDLinkedObject, V : IIDLinkedObject>(override v
  * @param name Name of this property, used in storage.
  * @param transformer Function to restore an object from its Long ID.
  */
-open class IDLinkedListProperty<K : IIDLinkedObject, V : IIDLinkedObject>(override val name: String,
-                                                                          private val transformer: (K) -> (Long) -> V) : DomainProperty<K, List<V>> {
+open class IDLinkedListProperty<K : IIDLinkedObject, V : IIDLinkedObject>(
+    override val name: String,
+    private val transformer: (K) -> (Long) -> V
+) : DomainProperty<K, List<V>> {
     override fun getPropertyValue(db: DB, domain: K): List<V>? {
         val map = db.hashMap(name, Serializer.LONG, Serializer.LONG_ARRAY).createOrOpen()
         val ids = map[domain.longID]

@@ -32,6 +32,3 @@ interface DomainProperty<K : IIDLinkedObject, V> {
         return getPropertyValue(db, domain) ?: default
     }
 }
-
-
-

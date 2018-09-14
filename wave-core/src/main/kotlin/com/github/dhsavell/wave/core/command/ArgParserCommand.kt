@@ -22,8 +22,9 @@ abstract class ArgParserCommand<T>(override val name: String, override val categ
             when (e) {
                 is ShowHelpException -> message.channel?.run { sendHelpEmbed(this, e.getMessageText(name)) }
                 is SystemExitException -> message.channel?.sendError(e.getMessageText(name))
-                else -> message.channel?.sendError(e.message ?:
-                    "An unknown error occurred while trying to run that command. This is a bug!")
+                else -> message.channel?.sendError(
+                    e.message ?: "An unknown error occurred while trying to run that command. This is a bug!"
+                )
             }
 
             CommandFailed

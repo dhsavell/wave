@@ -11,9 +11,11 @@ import org.slf4j.LoggerFactory
 import sx.blah.discord.api.ClientBuilder
 
 class DummyBot(commands: List<Command> = emptyList(), db: DB = DBMaker.memoryDB().make()) :
-        Bot(ClientBuilder().withToken("this is an invalid token").build(),
-                LoggerFactory.getLogger(DummyBot::class.java), "",
-                DBMaker.memoryDB().make(),
-                CommandManager(commands),
-                ConversationManager(),
-                PermissionManager(db))
+    Bot(
+        ClientBuilder().withToken("this is an invalid token").build(),
+        LoggerFactory.getLogger(DummyBot::class.java), "",
+        DBMaker.memoryDB().make(),
+        CommandManager(commands),
+        ConversationManager(),
+        PermissionManager(db)
+    )

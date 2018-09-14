@@ -3,7 +3,6 @@ package com.github.dhsavell.wave.core.command
 import com.github.dhsavell.wave.core.bot.Bot
 import com.github.dhsavell.wave.core.permission.Permission
 import com.github.dhsavell.wave.core.permission.ServerAdminsCanUse
-import org.mapdb.DB
 import sx.blah.discord.handle.obj.IMessage
 
 sealed class CommandResult

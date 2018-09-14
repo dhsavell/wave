@@ -20,11 +20,10 @@ class CommandHelp : Command {
             title { "Help" }
             description {
                 "To get help for a command, use the following syntax: `<command> --help`\n" +
-                        "For a list of commands, see the online documentation."
+                    "For a list of commands, see the online documentation."
             }
         }
 
         return CommandSucceeded
     }
-
 }

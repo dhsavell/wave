@@ -27,8 +27,10 @@ class CommandSetPermission : ArgParserCommand<CommandSetPermission.Args>("permis
             bot.permissionManager.setOverride(command, args.permission, message.guild)
         }
 
-        message.channel.sendSuccess("Updated required permission for **${args.commands.size}** command(s) to " +
-                "**${args.permission.name}**.")
+        message.channel.sendSuccess(
+            "Updated required permission for **${args.commands.size}** command(s) to " +
+                "**${args.permission.name}**."
+        )
 
         return CommandSucceeded
     }

@@ -28,13 +28,15 @@ object BotColors {
  * Class representing a bot that ties together a CommandManager, ConversationManager, and PermissionManager. Constructor
  * is injectable with the prefix being named "prefix".
  */
-open class Bot @Inject constructor(val client: IDiscordClient,
-                                   val logger: Logger,
-                                   @Named("prefix") private val defaultPrefix: String,
-                                   internal val db: DB,
-                                   val commandManager: CommandManager,
-                                   val conversationManager: ConversationManager,
-                                   val permissionManager: PermissionManager) {
+open class Bot @Inject constructor(
+    val client: IDiscordClient,
+    val logger: Logger,
+    @Named("prefix") private val defaultPrefix: String,
+    internal val db: DB,
+    val commandManager: CommandManager,
+    val conversationManager: ConversationManager,
+    val permissionManager: PermissionManager
+) {
     fun runForever() {
         client.dispatcher.registerListener(this)
         client.login()

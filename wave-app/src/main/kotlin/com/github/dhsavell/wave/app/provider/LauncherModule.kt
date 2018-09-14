@@ -17,7 +17,10 @@ import javax.inject.Named
 class LauncherModule(parser: ArgParser) {
     private val token by parser.storing("token to run the bot with")
     private val dbPath by parser.storing("path to the database") { File(this) }.default(File("./wave.mapdb"))
-    private val useMemoryDB by parser.flagging("--use-memory-db", help = "whether or not data should be kept in memory").default(false)
+    private val useMemoryDB by parser.flagging(
+        "--use-memory-db",
+        help = "whether or not data should be kept in memory"
+    ).default(false)
     private val prefix by parser.storing("bot command prefix").default("w.")
 
     @Provides
@@ -53,10 +56,10 @@ class LauncherModule(parser: ArgParser) {
 
     fun createAndRunBot() {
         val bot = DaggerBotComponent.builder()
-                .managerModule(ManagerModule())
-                .launcherModule(this)
-                .build()
-                .bot()
+            .managerModule(ManagerModule())
+            .launcherModule(this)
+            .build()
+            .bot()
 
         bot.runForever()
     }

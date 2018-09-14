@@ -1,6 +1,12 @@
 package com.github.dhsavell.wave.core.command
 
-import com.xenomachina.argparser.*
+import com.xenomachina.argparser.MissingRequiredPositionalArgumentException
+import com.xenomachina.argparser.MissingValueException
+import com.xenomachina.argparser.OptionMissingRequiredArgumentException
+import com.xenomachina.argparser.SystemExitException
+import com.xenomachina.argparser.UnexpectedOptionArgumentException
+import com.xenomachina.argparser.UnexpectedPositionalArgumentException
+import com.xenomachina.argparser.UnrecognizedOptionException
 import java.io.StringWriter
 
 fun SystemExitException.getMessageText(name: String, columns: Int = 55): String {

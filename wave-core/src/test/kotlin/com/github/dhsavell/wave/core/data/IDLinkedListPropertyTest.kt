@@ -20,7 +20,8 @@ class IDLinkedListPropertyTest : StringSpec({
     }
 
     "A value can be written to and loaded from an IDLinkedListProperty" {
-        val property = IDLinkedListProperty<DummyIDLinkedObject, DummyIDLinkedObject>("save-load") { it::getOtherObject }
+        val property =
+            IDLinkedListProperty<DummyIDLinkedObject, DummyIDLinkedObject>("save-load") { it::getOtherObject }
         property.setPropertyValue(db, domain1, listOf(value1))
         property.getPropertyValue(db, domain1) shouldBe listOf(value1)
     }
@@ -33,7 +34,8 @@ class IDLinkedListPropertyTest : StringSpec({
     }
 
     "Appending to an empty IDLinkedListProperty initializes it" {
-        val property = IDLinkedListProperty<DummyIDLinkedObject, DummyIDLinkedObject>("append-init") { it::getOtherObject }
+        val property =
+            IDLinkedListProperty<DummyIDLinkedObject, DummyIDLinkedObject>("append-init") { it::getOtherObject }
         property.appendValues(db, domain1, value1)
         property.getPropertyValue(db, domain1) shouldBe listOf(value1)
     }

@@ -6,7 +6,6 @@ import sx.blah.discord.handle.obj.IRole
 import sx.blah.discord.handle.obj.IUser
 import sx.blah.discord.handle.obj.Permissions
 
-
 sealed class Permission(open val name: String) {
     abstract fun appliesToUser(user: IUser, guild: IGuild): Boolean
     abstract fun toLong(): Long
@@ -39,8 +38,10 @@ sealed class Permission(open val name: String) {
                     return if (givenRole != null) {
                         MembersWithRoleCanUse(givenRole)
                     } else {
-                        throw IllegalArgumentException("Invalid permission name. Try `${AnybodyCanUse.name}`," +
-                                "`${NobodyCanUse.name}`, `${ServerAdminsCanUse.name}`, or a role.")
+                        throw IllegalArgumentException(
+                            "Invalid permission name. Try `${AnybodyCanUse.name}`," +
+                                "`${NobodyCanUse.name}`, `${ServerAdminsCanUse.name}`, or a role."
+                        )
                     }
                 }
             }

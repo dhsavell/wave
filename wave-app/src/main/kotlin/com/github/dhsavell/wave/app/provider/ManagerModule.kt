@@ -19,7 +19,11 @@ annotation class CommandProvider
 class ManagerModule {
     @Provides
     fun provideCommandManager(): CommandManager {
-        return CommandManager(Index.load(CommandProvider::class.java, Command::class.java).map { indexItem -> indexItem.instance() })
+        return CommandManager(
+            Index.load(
+                CommandProvider::class.java,
+                Command::class.java
+            ).map { indexItem -> indexItem.instance() })
     }
 
     @Provides
