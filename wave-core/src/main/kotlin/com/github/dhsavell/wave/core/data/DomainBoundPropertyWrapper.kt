@@ -11,7 +11,7 @@ import sx.blah.discord.handle.obj.IIDLinkedObject
  * @param K Domain type of this property.
  * @param V Value type of this property.
  */
-interface DomainProperty<K : IIDLinkedObject, V> {
+interface DomainBoundPropertyWrapper<K : IIDLinkedObject, V> {
     val name: String
 
     /**

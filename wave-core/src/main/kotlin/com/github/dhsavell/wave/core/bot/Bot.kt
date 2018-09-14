@@ -32,7 +32,7 @@ open class Bot @Inject constructor(
     val client: IDiscordClient,
     val logger: Logger,
     @Named("prefix") private val defaultPrefix: String,
-    internal val db: DB,
+    val db: DB,
     val commandManager: CommandManager,
     val conversationManager: ConversationManager,
     val permissionManager: PermissionManager
@@ -65,9 +65,10 @@ open class Bot @Inject constructor(
             message.content.startsWith(defaultPrefix, true) -> {
                 val commandCall = message.content.substring(defaultPrefix.length)
                 val command = commandManager.getCommandFromCall(commandCall)
+                val commandArguments = commandCall.split(" ").drop(1)
                 if (command != null) {
                     if (permissionManager.userCanInvoke(command, message.author, message.guild)) {
-                        command(this, message, commandManager.getArgumentsFromCall(commandCall))
+                        command(this, message, commandArguments)
                     } else {
                         channel.sendError("You don't have permission to use this command.")
                     }

@@ -20,7 +20,7 @@ fun String.toRoleIDFromMention(): String {
     return this.replace("[<@&>]".toRegex(), "")
 }
 
-private fun <T> identifierGetter(
+private fun <T> getValueFromIdentifier(
     identifier: String,
     nameMatcher: (String) -> T?,
     stringIDGetter: (String) -> String,
@@ -42,7 +42,7 @@ private fun <T> identifierGetter(
 /**
  * Gets a user from a given identifier. This could be a mention, ID, or some portion of their display name.
  */
-fun String.toUserFromIdentifier(guild: IGuild): IUser? = identifierGetter(
+fun String.toUserFromIdentifier(guild: IGuild): IUser? = getValueFromIdentifier(
     this, { name -> guild.users.find { it.name.startsWith(name, true) } },
     String::toUserIDFromMention, guild::getUserByID
 )
@@ -50,7 +50,7 @@ fun String.toUserFromIdentifier(guild: IGuild): IUser? = identifierGetter(
 /**
  * Gets a channel from a given identifier. This could be a mention, ID, or some portion of its display name.
  */
-fun String.toChannelFromIdentifier(guild: IGuild): IChannel? = identifierGetter(
+fun String.toChannelFromIdentifier(guild: IGuild): IChannel? = getValueFromIdentifier(
     this, { name -> guild.channels.find { it.name.startsWith(name, true) } },
     String::toChannelIDFromMention, guild::getChannelByID
 )
@@ -58,7 +58,7 @@ fun String.toChannelFromIdentifier(guild: IGuild): IChannel? = identifierGetter(
 /**
  * Gets a role from a given identifier. This could be a mention, ID, or some portion of its display name.
  */
-fun String.toRoleFromIdentifier(guild: IGuild): IRole? = identifierGetter(
+fun String.toRoleFromIdentifier(guild: IGuild): IRole? = getValueFromIdentifier(
     this, { name -> guild.roles.find { it.name.startsWith(name, true) } },
     String::toRoleIDFromMention, guild::getRoleByID
 )
