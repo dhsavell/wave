@@ -28,19 +28,17 @@ object BotColors {
  * Class representing a bot that ties together a CommandManager, ConversationManager, and PermissionManager. Constructor
  * is injectable with the prefix being named "prefix".
  */
-open class Bot @Inject constructor(val client: IDiscordClient,
-                                   val logger: Logger,
-                                   @Named("prefix") private val defaultPrefix: String,
-                                   internal val db: DB,
-                                   val commandManager: CommandManager,
-                                   val conversationManager: ConversationManager,
-                                   val permissionManager: PermissionManager) {
-
-    init {
-        client.dispatcher.registerListener(this)
-    }
-
+open class Bot @Inject constructor(
+    val client: IDiscordClient,
+    val logger: Logger,
+    @Named("prefix") private val defaultPrefix: String,
+    val db: DB,
+    val commandManager: CommandManager,
+    val conversationManager: ConversationManager,
+    val permissionManager: PermissionManager
+) {
     fun runForever() {
+        client.dispatcher.registerListener(this)
         client.login()
     }
 
@@ -55,23 +53,27 @@ open class Bot @Inject constructor(val client: IDiscordClient,
     @EventSubscriber
     fun onMessageSent(event: MessageReceivedEvent) {
         val message = event.message
+        val channel = message.channel
+
+        if (message.author == client.ourUser) {
+            return
+        }
 
         when {
-            message.author == client.ourUser -> return
-            message.channel.isPrivate -> message.channel.sendError("Wave is currently not available for direct messages.")
+            channel.isPrivate -> channel.sendError("Wave is currently not available for direct messages.")
             conversationManager.isResponse(message) -> conversationManager.handleResponse(message)
             message.content.startsWith(defaultPrefix, true) -> {
-                logger.debug("command")
                 val commandCall = message.content.substring(defaultPrefix.length)
                 val command = commandManager.getCommandFromCall(commandCall)
+                val commandArguments = commandCall.split(" ").drop(1)
                 if (command != null) {
                     if (permissionManager.userCanInvoke(command, message.author, message.guild)) {
-                        command(this, db, message, commandCall.split(" ").drop(1))
+                        command(this, message, commandArguments)
                     } else {
-                        message.channel.sendError("You don't have permission to use this command.")
+                        channel.sendError("You don't have permission to use this command.")
                     }
                 } else {
-                    message.channel.sendError("Unknown command.")
+                    channel.sendError("Unknown command.")
                 }
             }
         }
@@ -81,7 +83,6 @@ open class Bot @Inject constructor(val client: IDiscordClient,
 fun IChannel.sendEmbed(initBlock: DslEmbedBuilder.() -> Unit): IMessage {
     return sendMessage(embed(initBlock))
 }
-
 
 fun IChannel.sendInfo(message: String): IMessage = sendEmbed {
     title { message }

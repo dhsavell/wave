@@ -17,17 +17,8 @@ class CommandManager(val commands: List<Command>) {
     fun getCommandFromCall(commandCall: String): Command? {
         val callComponents = commandCall.split(" ")
         val commandName = callComponents[0].toLowerCase()
-        val commandMatch = commands.filter { command ->
+        return commands.firstOrNull { command ->
             command.name == commandName || command.aliases.contains(commandName)
         }
-
-        return commandMatch.firstOrNull()
-    }
-
-    /**
-     * Gets arguments from a given call.
-     */
-    fun getArgumentsFromCall(commandCall: String): Array<String> {
-        return commandCall.split(" ").drop(1).toTypedArray()
     }
 }

@@ -3,7 +3,6 @@ package com.github.dhsavell.wave.core.command
 import com.github.dhsavell.wave.core.bot.Bot
 import com.github.dhsavell.wave.core.permission.Permission
 import com.github.dhsavell.wave.core.permission.ServerAdminsCanUse
-import org.mapdb.DB
 import sx.blah.discord.handle.obj.IMessage
 
 sealed class CommandResult
@@ -39,9 +38,8 @@ interface Command {
 
     /**
      * Invokes this command.
-     * @param db MapDB instance.
      * @param message Message containing the command invocation.
      * @return Whether or not the command was executed successfully.
      */
-    operator fun invoke(bot: Bot, db: DB, message: IMessage, args: List<String>): CommandResult
+    operator fun invoke(bot: Bot, message: IMessage, args: List<String>): CommandResult
 }

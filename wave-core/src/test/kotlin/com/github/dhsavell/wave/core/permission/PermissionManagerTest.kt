@@ -8,7 +8,6 @@ import io.kotlintest.specs.StringSpec
 import org.mapdb.DBMaker
 import sx.blah.discord.handle.obj.IGuild
 
-
 class PermissionManagerTest : StringSpec({
     val db = DBMaker.memoryDB().make()
 

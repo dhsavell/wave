@@ -4,10 +4,12 @@ import sx.blah.discord.handle.obj.IChannel
 import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IUser
 
-data class ActiveConversation(var progress: List<Prompt>,
-                              var responses: Map<String, String>,
-                              val location: IChannel,
-                              val participant: IUser)
+data class ActiveConversation(
+    var progress: List<Prompt>,
+    var responses: Map<String, String>,
+    val location: IChannel,
+    val participant: IUser
+)
 
 /**
  * A class for managing multiple ongoing Conversations at once.
@@ -39,7 +41,7 @@ class ConversationManager {
     private fun getCorrespondingConversation(message: IMessage): ActiveConversation? {
         return activeConversations.find { conversation ->
             conversation.participant == message.author &&
-                    conversation.location == message.channel
+                conversation.location == message.channel
         }
     }
 

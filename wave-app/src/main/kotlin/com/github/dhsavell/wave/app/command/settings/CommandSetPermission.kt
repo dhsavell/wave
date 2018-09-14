@@ -11,7 +11,6 @@ import com.github.dhsavell.wave.core.command.CommandSucceeded
 import com.github.dhsavell.wave.core.permission.Permission
 import com.github.dhsavell.wave.core.permission.ServerAdminsCanUse
 import com.xenomachina.argparser.ArgParser
-import org.mapdb.DB
 import sx.blah.discord.handle.obj.IGuild
 import sx.blah.discord.handle.obj.IMessage
 
@@ -23,13 +22,15 @@ class CommandSetPermission : ArgParserCommand<CommandSetPermission.Args>("permis
         return Args(parser, bot.commandManager, context.guild)
     }
 
-    override fun invoke(bot: Bot, db: DB, message: IMessage, args: Args): CommandResult {
+    override fun invoke(bot: Bot, message: IMessage, args: Args): CommandResult {
         args.commands.forEach { command ->
             bot.permissionManager.setOverride(command, args.permission, message.guild)
         }
 
-        message.channel.sendSuccess("Updated required permission for **${args.commands.size}** command(s) to " +
-                "**${args.permission.name}**.")
+        message.channel.sendSuccess(
+            "Updated required permission for **${args.commands.size}** command(s) to " +
+                "**${args.permission.name}**."
+        )
 
         return CommandSucceeded
     }

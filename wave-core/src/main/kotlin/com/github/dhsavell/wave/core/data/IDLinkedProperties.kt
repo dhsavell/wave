@@ -5,16 +5,18 @@ import org.mapdb.Serializer
 import sx.blah.discord.handle.obj.IIDLinkedObject
 
 /**
- * A DomainProperty for storing an IDLinkedObject (i.e. Discord4J objects such as IUser, IChannel...) within an IGuild.
+ * A DomainBoundPropertyWrapper for storing an IDLinkedObject (i.e. Discord4J objects such as IUser, IChannel...) within an IGuild.
  *
- * @see IDLinkedListProperty
+ * @see DiscordObjectListProperty
  * @param K Domain this property will be accessed from.
  * @param V Type being stored in this property.
  * @param name Name of this property, used in storage.
  * @param transformer Function to restore an object from its Long ID.
  */
-open class IDLinkedProperty<K : IIDLinkedObject, V : IIDLinkedObject>(override val name: String,
-                                                                      private val transformer: (K) -> (Long) -> V) : DomainProperty<K, V> {
+open class DiscordObjectProperty<K : IIDLinkedObject, V : IIDLinkedObject>(
+    override val name: String,
+    private val transformer: (K) -> (Long) -> V
+) : DomainBoundPropertyWrapper<K, V> {
     override fun getPropertyValue(db: DB, domain: K): V? {
         val map = db.hashMap(name, Serializer.LONG, Serializer.LONG).createOrOpen()
         val id = map[domain.longID]
@@ -29,16 +31,18 @@ open class IDLinkedProperty<K : IIDLinkedObject, V : IIDLinkedObject>(override v
 }
 
 /**
- * A DomainProperty for storing an List of IDLinkedObjects within an IGuild. This has nothing to do with linked lists.
+ * A DomainBoundPropertyWrapper for storing an List of IDLinkedObjects within an IGuild. This has nothing to do with linked lists.
  *
- * @see IDLinkedProperty
+ * @see DiscordObjectProperty
  * @param K Domain this property will be accessed from.
  * @param V Type being stored in this property.
  * @param name Name of this property, used in storage.
  * @param transformer Function to restore an object from its Long ID.
  */
-open class IDLinkedListProperty<K : IIDLinkedObject, V : IIDLinkedObject>(override val name: String,
-                                                                          private val transformer: (K) -> (Long) -> V) : DomainProperty<K, List<V>> {
+open class DiscordObjectListProperty<K : IIDLinkedObject, V : IIDLinkedObject>(
+    override val name: String,
+    private val transformer: (K) -> (Long) -> V
+) : DomainBoundPropertyWrapper<K, List<V>> {
     override fun getPropertyValue(db: DB, domain: K): List<V>? {
         val map = db.hashMap(name, Serializer.LONG, Serializer.LONG_ARRAY).createOrOpen()
         val ids = map[domain.longID]

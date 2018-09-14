@@ -48,7 +48,7 @@ class PermissionManager(private val db: DB) {
      * Returns whether or not a user can invoke a command.
      */
     fun userCanInvoke(command: Command, user: IUser, guild: IGuild): Boolean =
-            getEffectivePermission(command, guild).appliesToUser(user, guild)
+        getEffectivePermission(command, guild).appliesToUser(user, guild)
 }
 
 /**

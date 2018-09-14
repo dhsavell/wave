@@ -4,7 +4,7 @@ import com.github.dhsavell.wave.core.conversation.Prompt
 import sx.blah.discord.handle.obj.IMessage
 
 class ConversationBuilder internal constructor(conversationInit: ConversationBuilder.() -> Unit) {
-    private var prompts: List<PromptImpl> = emptyList()
+    private var prompts: List<ConversationPrompt> = emptyList()
 
     init {
         conversationInit()
@@ -30,8 +30,8 @@ class ConversationBuilder internal constructor(conversationInit: ConversationBui
             promptInit()
         }
 
-        fun storeResultAs(name: String) {
-            this.name = name
+        fun storeResultAs(name: () -> String) {
+            this.name = name()
         }
 
         fun afterResponse(handler: (IMessage, Map<String, String>) -> Unit) {
@@ -42,8 +42,8 @@ class ConversationBuilder internal constructor(conversationInit: ConversationBui
             this.validator = validator
         }
 
-        fun build(): PromptImpl {
-            return PromptImpl(name, question, handler, validator)
+        fun build(): ConversationPrompt {
+            return ConversationPrompt(name, question, handler, validator)
         }
     }
 }

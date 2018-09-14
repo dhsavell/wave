@@ -38,7 +38,10 @@ sealed class Permission(open val name: String) {
                     return if (givenRole != null) {
                         MembersWithRoleCanUse(givenRole)
                     } else {
-                        throw IllegalArgumentException("Invalid permission name.")
+                        throw IllegalArgumentException(
+                            "Invalid permission name. Try `${AnybodyCanUse.name}`," +
+                                "`${NobodyCanUse.name}`, `${ServerAdminsCanUse.name}`, or a role."
+                        )
                     }
                 }
             }
@@ -68,9 +71,7 @@ object ServerAdminsCanUse : Permission("admin") {
 
 class MembersWithRoleCanUse(val role: IRole) : Permission("role") {
     override val name get() = "role " + role.name
-
     override fun toLong(): Long = role.longID
-
     override fun appliesToUser(user: IUser, guild: IGuild): Boolean {
         return user == guild.owner || user.hasRole(role)
     }
