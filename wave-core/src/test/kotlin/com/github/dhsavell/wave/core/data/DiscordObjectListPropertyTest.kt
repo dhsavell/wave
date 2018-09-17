@@ -15,7 +15,8 @@ class DiscordObjectListPropertyTest : StringSpec({
     val value3 = DummyIDLinkedObject(13)
 
     "An DiscordObjectListProperty returns null when its value isn't found" {
-        val property = DiscordObjectListProperty<DummyIDLinkedObject, DummyIDLinkedObject>("null") { it::getOtherObject }
+        val property =
+            DiscordObjectListProperty<DummyIDLinkedObject, DummyIDLinkedObject>("null") { it::getOtherObject }
         property.getPropertyValue(db, domain1) shouldBe null
     }
 
@@ -27,7 +28,8 @@ class DiscordObjectListPropertyTest : StringSpec({
     }
 
     "An DiscordObjectListProperty can be appended to" {
-        val property = DiscordObjectListProperty<DummyIDLinkedObject, DummyIDLinkedObject>("append") { it::getOtherObject }
+        val property =
+            DiscordObjectListProperty<DummyIDLinkedObject, DummyIDLinkedObject>("append") { it::getOtherObject }
         property.setPropertyValue(db, domain1, listOf(value1, value2))
         property.appendValues(db, domain1, value3, value1)
         property.getPropertyValue(db, domain1) shouldBe listOf(value1, value2, value3, value1)

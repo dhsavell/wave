@@ -1,8 +1,8 @@
 package com.github.dhsavell.wave.app.command.meta
 
+import com.github.dhsavell.wave.app.command.CommandProvider
 import com.github.dhsavell.wave.app.command.Meta
-import com.github.dhsavell.wave.app.provider.CommandProvider
-import com.github.dhsavell.wave.core.bot.Bot
+import com.github.dhsavell.wave.core.bot.WaveBot
 import com.github.dhsavell.wave.core.bot.sendEmbed
 import com.github.dhsavell.wave.core.command.Category
 import com.github.dhsavell.wave.core.command.Command
@@ -15,7 +15,7 @@ class CommandHelp : Command {
     override val name: String = "help"
     override val category: Category = Meta
 
-    override fun invoke(bot: Bot, message: IMessage, args: List<String>): CommandResult {
+    override fun invoke(bot: WaveBot, message: IMessage, args: List<String>): CommandResult {
         message.channel.sendEmbed {
             title { "Help" }
             description {

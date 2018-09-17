@@ -1,7 +1,7 @@
 package com.github.dhsavell.wave.core.command
 
-import com.github.dhsavell.wave.core.bot.Bot
-import com.github.dhsavell.wave.core.testutil.DummyBot
+import com.github.dhsavell.wave.core.bot.WaveBot
+import com.github.dhsavell.wave.core.testutil.createDummyBot
 import com.github.dhsavell.wave.core.util.toUserFromIdentifier
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -13,14 +13,15 @@ import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IUser
 
 object TestCategory : Category {
-    override val name: String = ""
-    override val description: String = ""
+    override val name: String = "Test Category"
+    override val description: String = "A test category"
 }
 
 class TestCommand(private val onInvoked: (Args) -> Unit) : ArgParserCommand<TestCommand.Args>("test", TestCategory) {
-    override fun createArgsObject(parser: ArgParser, bot: Bot, context: IMessage): Args = Args(parser, context.guild)
+    override fun createArgsObject(parser: ArgParser, bot: WaveBot, context: IMessage): Args =
+        Args(parser, context.guild)
 
-    override fun invoke(bot: Bot, message: IMessage, args: Args): CommandResult {
+    override fun invoke(bot: WaveBot, message: IMessage, args: Args): CommandResult {
         onInvoked(args)
         return CommandSucceeded
     }
@@ -34,7 +35,7 @@ class TestCommand(private val onInvoked: (Args) -> Unit) : ArgParserCommand<Test
 }
 
 class ArgParserCommandTest : StringSpec({
-    val mockBot = DummyBot()
+    val mockBot = createDummyBot()
 
     "Parameters can be passed to an ArgParserCommand" {
         val command = TestCommand { args ->

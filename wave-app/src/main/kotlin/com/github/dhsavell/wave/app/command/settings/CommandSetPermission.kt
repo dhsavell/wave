@@ -1,8 +1,8 @@
 package com.github.dhsavell.wave.app.command.settings
 
+import com.github.dhsavell.wave.app.command.CommandProvider
 import com.github.dhsavell.wave.app.command.Settings
-import com.github.dhsavell.wave.app.provider.CommandProvider
-import com.github.dhsavell.wave.core.bot.Bot
+import com.github.dhsavell.wave.core.bot.WaveBot
 import com.github.dhsavell.wave.core.bot.sendSuccess
 import com.github.dhsavell.wave.core.command.ArgParserCommand
 import com.github.dhsavell.wave.core.command.CommandManager
@@ -18,11 +18,11 @@ import sx.blah.discord.handle.obj.IMessage
 class CommandSetPermission : ArgParserCommand<CommandSetPermission.Args>("permission", Settings) {
     override val defaultPermission: Permission = ServerAdminsCanUse
 
-    override fun createArgsObject(parser: ArgParser, bot: Bot, context: IMessage): Args {
+    override fun createArgsObject(parser: ArgParser, bot: WaveBot, context: IMessage): Args {
         return Args(parser, bot.commandManager, context.guild)
     }
 
-    override fun invoke(bot: Bot, message: IMessage, args: Args): CommandResult {
+    override fun invoke(bot: WaveBot, message: IMessage, args: Args): CommandResult {
         args.commands.forEach { command ->
             bot.permissionManager.setOverride(command, args.permission, message.guild)
         }
