@@ -15,6 +15,7 @@ import javax.inject.Named
 
 @Module
 class LauncherModule(parser: ArgParser) {
+    private val buildDocs by parser.flagging("--build-docs", help = "whether or not to rebuild bot documentation")
     private val token by parser.storing("token to run the bot with")
     private val dbPath by parser.storing("path to the database") { File(this) }.default(File("./wave.mapdb"))
     private val useMemoryDB by parser.flagging(
@@ -60,6 +61,9 @@ class LauncherModule(parser: ArgParser) {
             .launcherModule(this)
             .build()
             .bot()
+
+        if (buildDocs) {
+        }
 
         bot.runForever()
     }

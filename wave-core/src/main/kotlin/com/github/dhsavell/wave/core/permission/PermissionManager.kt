@@ -1,6 +1,6 @@
 package com.github.dhsavell.wave.core.permission
 
-import com.github.dhsavell.wave.core.command.Command
+import com.github.dhsavell.wave.core.command.CommandAction
 import org.mapdb.DB
 import org.mapdb.Serializer
 import sx.blah.discord.handle.obj.IGuild
@@ -8,14 +8,14 @@ import sx.blah.discord.handle.obj.IUser
 import java.util.concurrent.ConcurrentMap
 
 /**
- * Manages Command permission overrides.
+ * Manages CommandAction permission overrides.
  */
 class PermissionManager(private val db: DB) {
     /**
      * Gets the effective permission of a command within a guild. If an override has been set, that is returned.
      * Otherwise, the default permission for the command is returned.
      */
-    fun getEffectivePermission(command: Command, guild: IGuild): Permission {
+    fun getEffectivePermission(command: CommandAction, guild: IGuild): Permission {
         val permissionMap = guild.getLivePermissionMap(db)
         return if (permissionMap.containsKey(command.name)) {
             Permission.fromLong(permissionMap[command.name] ?: 0L, guild)
@@ -27,7 +27,7 @@ class PermissionManager(private val db: DB) {
     /**
      * Sets a permission override for a command within a guild.
      */
-    fun setOverride(command: Command, permission: Permission, guild: IGuild) {
+    fun setOverride(command: CommandAction, permission: Permission, guild: IGuild) {
         if (command.defaultPermission != permission) {
             val permissionMap = guild.getLivePermissionMap(db)
             permissionMap[command.name] = permission.toLong()
@@ -37,7 +37,7 @@ class PermissionManager(private val db: DB) {
     /**
      * Clears the permission override for a command within a guild..
      */
-    fun clearOverride(command: Command, guild: IGuild) {
+    fun clearOverride(command: CommandAction, guild: IGuild) {
         val permissionMap = guild.getLivePermissionMap(db)
         if (permissionMap.containsKey(command.name)) {
             permissionMap.remove(command.name)
@@ -47,7 +47,7 @@ class PermissionManager(private val db: DB) {
     /**
      * Returns whether or not a user can invoke a command.
      */
-    fun userCanInvoke(command: Command, user: IUser, guild: IGuild): Boolean =
+    fun userCanInvoke(command: CommandAction, user: IUser, guild: IGuild): Boolean =
         getEffectivePermission(command, guild).appliesToUser(user, guild)
 }
 

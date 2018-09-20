@@ -5,7 +5,7 @@ import sx.blah.discord.handle.obj.IIDLinkedObject
 
 /**
  * A wrapper for storing some value within a domain. A domain refers to some kind of Discord object-- in most cases,
- * a server (internally referred to as a Guild). This wrapper was designed with Command objects in mind, allowing for
+ * a server (internally referred to as a Guild). This wrapper was designed with CommandAction objects in mind, allowing for
  * simple access to data storage.
  *
  * @param K Domain type of this property.

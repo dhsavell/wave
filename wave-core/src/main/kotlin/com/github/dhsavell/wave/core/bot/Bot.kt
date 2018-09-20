@@ -1,6 +1,5 @@
 package com.github.dhsavell.wave.core.bot
 
-import com.github.dhsavell.wave.core.command.CommandManager
 import com.github.dhsavell.wave.core.conversation.ConversationManager
 import com.github.dhsavell.wave.core.permission.PermissionManager
 import com.github.dhsavell.wave.core.util.DslEmbedBuilder
