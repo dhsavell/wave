@@ -1,6 +1,6 @@
 package com.github.dhsavell.wave.app.provider
 
-import com.github.dhsavell.wave.core.command.CommandAction
+import com.github.dhsavell.wave.core.command.Command
 import com.github.dhsavell.wave.core.conversation.ConversationManager
 import com.github.dhsavell.wave.core.permission.PermissionManager
 import dagger.Module
@@ -11,7 +11,7 @@ import org.mapdb.DB
 
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-@Indexable(type = CommandAction::class)
+@Indexable(type = Command::class)
 annotation class CommandProvider
 
 @Module
@@ -21,7 +21,7 @@ class ManagerModule {
         return CommandManager(
             Index.load(
                 CommandProvider::class.java,
-                CommandAction::class.java
+                Command::class.java
             ).map { indexItem -> indexItem.instance() })
     }
 

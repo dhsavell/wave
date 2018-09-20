@@ -1,5 +1,6 @@
 package com.github.dhsavell.wave.core.bot
 
+import com.github.dhsavell.wave.core.command.factory.CommandFactory
 import com.github.dhsavell.wave.core.conversation.ConversationManager
 import com.github.dhsavell.wave.core.permission.PermissionManager
 import com.github.dhsavell.wave.core.util.DslEmbedBuilder
@@ -32,7 +33,7 @@ open class Bot @Inject constructor(
     val logger: Logger,
     @Named("prefix") private val defaultPrefix: String,
     val db: DB,
-    val commandManager: CommandManager,
+    val commandProviders: List<CommandFactory>,
     val conversationManager: ConversationManager,
     val permissionManager: PermissionManager
 ) {
@@ -46,7 +47,7 @@ open class Bot @Inject constructor(
     fun onReady(event: ReadyEvent) {
         logger.info("Logged in as ${client.ourUser.name}#${client.ourUser.discriminator} (${client.ourUser.stringID})")
         logger.info("Servers: ${client.guilds.size}")
-        logger.info("Commands: ${commandManager.commands.size}")
+        logger.info("Commands: ${commandProviders.size}")
     }
 
     @EventSubscriber
