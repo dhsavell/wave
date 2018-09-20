@@ -7,7 +7,7 @@ class NumberRepeaterCommand(context: IMessage) : AbstractBaseCommand(context) {
     val number by args.storing("number") { toInt() }
 
     override fun execute(): CommandResult {
-        return CommandSuccededWithValue("number is $number")
+        return CommandSucceededWithValue("number is $number")
     }
 
     companion object Factory : SimpleCommandFactory("number", listOf("num", "n"), ::NumberRepeaterCommand)
