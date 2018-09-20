@@ -9,5 +9,5 @@ import sx.blah.discord.handle.obj.IMessage
  */
 interface CommandFactory {
     fun canProvideFor(commandName: String, context: IMessage): Boolean
-    fun getAction(context: IMessage): Command
+    fun getAction(commandCall: String, context: IMessage): Command
 }

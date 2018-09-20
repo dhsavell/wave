@@ -9,7 +9,7 @@ import sx.blah.discord.handle.obj.IMessage
 open class SimpleCommandFactory(
     private val primaryCommandName: String,
     private val commandAliases: List<String> = emptyList(),
-    private val commandProvider: (IMessage) -> Command
+    private val commandProvider: (String, IMessage) -> Command
 ) : CommandFactory {
     override fun canProvideFor(commandName: String, context: IMessage): Boolean {
         return primaryCommandName.equals(commandName, ignoreCase = true) ||
@@ -17,5 +17,5 @@ open class SimpleCommandFactory(
                 commandAliases.map { alias -> alias.toLowerCase() }.contains(commandName.toLowerCase()))
     }
 
-    override fun getAction(context: IMessage): Command = commandProvider(context)
+    override fun getAction(commandCall: String, context: IMessage): Command = commandProvider(commandCall, context)
 }

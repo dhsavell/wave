@@ -1,6 +1,7 @@
 package com.github.dhsavell.wave.core.command
 
 import com.github.dhsavell.wave.core.command.factory.CommandFactory
+import com.xenomachina.argparser.SystemExitException
 import sx.blah.discord.handle.obj.IMessage
 
 /**
@@ -18,6 +19,10 @@ class CommandRunner(val commandFactories: List<CommandFactory>) {
         val commandName = callWithoutPrefix.split(" ")[0]
         val correspondingFactory = commandFactories.find { factory -> factory.canProvideFor(commandName, context) }
 
-        return correspondingFactory?.getAction(context)?.execute() ?: CommandNotFound
+        return try {
+            correspondingFactory?.getAction(callWithoutPrefix, context)?.execute() ?: CommandNotFound
+        } catch (e: SystemExitException) {
+            CommandFailedWithException(InvalidCommandSyntaxException(e.message ?: "invalid command syntax", e))
+        }
     }
 }
