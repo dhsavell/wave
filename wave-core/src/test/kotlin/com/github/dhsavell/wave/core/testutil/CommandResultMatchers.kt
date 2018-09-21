@@ -18,13 +18,13 @@ fun succeedWith(expectedValue: String): Matcher<CommandResult> = object : Matche
             else -> Result(
                 true,
                 "Command succeeded with the expected result",
-                "Command did not succeed with the expectede result"
+                "Command did not succeed with the expected result"
             )
         }
     }
 }
 
-inline fun <reified T> failWith(): Matcher<CommandResult> = object : Matcher<CommandResult> {
+inline fun <reified T : Exception> failWith(): Matcher<CommandResult> = object : Matcher<CommandResult> {
     override fun test(value: CommandResult): Result {
         return when {
             value !is CommandFailedWithException -> Result(

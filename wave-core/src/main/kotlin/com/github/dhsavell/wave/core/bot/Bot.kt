@@ -1,11 +1,10 @@
 package com.github.dhsavell.wave.core.bot
 
-import com.github.dhsavell.wave.core.command.CommandNotFound
-import com.github.dhsavell.wave.core.command.CommandRunner
 import com.github.dhsavell.wave.core.command.CommandFactory
+import com.github.dhsavell.wave.core.command.CommandRunner
 import com.github.dhsavell.wave.core.util.DslEmbedBuilder
 import com.github.dhsavell.wave.core.util.embed
-import org.mapdb.DB
+import org.dizitart.no2.Nitrite
 import org.slf4j.Logger
 import sx.blah.discord.api.IDiscordClient
 import sx.blah.discord.api.events.EventSubscriber
@@ -30,7 +29,7 @@ class Bot constructor(
     val client: IDiscordClient,
     val logger: Logger,
     val defaultPrefix: String,
-    val db: DB,
+    val db: Nitrite,
     commandFactories: List<CommandFactory>
 ) {
     val commandRunner = CommandRunner(commandFactories)
@@ -59,9 +58,9 @@ class Bot constructor(
             return
         }
 
-        val commandResult = commandRunner.runCommand(message.content.substring(defaultPrefix.length), message)
-        if (commandResult is CommandNotFound) {
-            channel.sendError(CommandNotFound.description)
+        val commandResult = commandRunner.runCommand(message.content.substring(defaultPrefix.length), message, db)
+        if (!commandResult.wasSuccessful) {
+            channel.sendError(commandResult.description)
         }
     }
 }

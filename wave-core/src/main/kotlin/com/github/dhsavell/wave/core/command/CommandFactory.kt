@@ -1,5 +1,6 @@
 package com.github.dhsavell.wave.core.command
 
+import org.dizitart.no2.Nitrite
 import sx.blah.discord.handle.obj.IMessage
 
 /**
@@ -11,11 +12,11 @@ interface CommandFactory {
     /**
      * Determines whether or not this CommandFactory can provide a command for the given command name.
      */
-    fun canProvideFor(commandName: String, context: IMessage): Boolean
+    fun canProvideFor(commandName: String, context: IMessage, db: Nitrite): Boolean
 
     /**
      * Gets the appropriate Command for a given call and context. In most cases, canProvideFor will already be used
      * to verify the call.
      */
-    fun getAction(commandCall: String, context: IMessage): Command
+    fun getAction(commandCall: String, context: IMessage, db: Nitrite): Command
 }
