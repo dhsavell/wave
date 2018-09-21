@@ -2,6 +2,7 @@ package com.github.dhsavell.wave.core.bot
 
 import com.github.dhsavell.wave.core.command.CommandNotFound
 import com.github.dhsavell.wave.core.command.CommandRunner
+import com.github.dhsavell.wave.core.command.CommandFactory
 import com.github.dhsavell.wave.core.util.DslEmbedBuilder
 import com.github.dhsavell.wave.core.util.embed
 import org.mapdb.DB
@@ -30,8 +31,10 @@ class Bot constructor(
     val logger: Logger,
     val defaultPrefix: String,
     val db: DB,
-    val commandRunner: CommandRunner
+    commandFactories: List<CommandFactory>
 ) {
+    val commandRunner = CommandRunner(commandFactories)
+
     fun runForever() {
         client.dispatcher.registerListener(this)
         client.login()

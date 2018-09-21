@@ -1,6 +1,5 @@
-package com.github.dhsavell.wave.core.command.factory
+package com.github.dhsavell.wave.core.command
 
-import com.github.dhsavell.wave.core.command.Command
 import sx.blah.discord.handle.obj.IMessage
 
 /**

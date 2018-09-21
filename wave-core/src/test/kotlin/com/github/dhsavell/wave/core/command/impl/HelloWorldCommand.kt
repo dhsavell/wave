@@ -3,7 +3,7 @@ package com.github.dhsavell.wave.core.command.impl
 import com.github.dhsavell.wave.core.command.AbstractBaseCommand
 import com.github.dhsavell.wave.core.command.CommandResult
 import com.github.dhsavell.wave.core.command.CommandSucceededWithValue
-import com.github.dhsavell.wave.core.command.factory.SimpleCommandFactory
+import com.github.dhsavell.wave.core.command.SimpleCommandFactory
 import com.xenomachina.argparser.default
 import sx.blah.discord.handle.obj.IMessage
 
