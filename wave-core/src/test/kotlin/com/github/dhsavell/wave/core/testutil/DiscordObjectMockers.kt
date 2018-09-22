@@ -8,9 +8,12 @@ import sx.blah.discord.handle.obj.IMessage
 import sx.blah.discord.handle.obj.IRole
 import sx.blah.discord.handle.obj.IUser
 
-fun message(content: String = ""): IMessage {
+fun message(content: String = "", author: IUser = user(), guild: IGuild = guild()): IMessage {
     val message = mockk<IMessage>()
+
     every { message.content } returns content
+    every { message.author } returns author
+    every { message.guild } returns guild
 
     return message
 }
@@ -38,12 +41,13 @@ fun user(name: String = "", discriminator: String = "0000", id: Long = 12345, ro
     return user
 }
 
-fun guild(name: String = "", id: Long = 12345): IGuild {
+fun guild(name: String = "", id: Long = 12345, owner: IUser = user()): IGuild {
     val guild = mockk<IGuild>()
 
     every { guild.name } returns name
     every { guild.longID } returns id
     every { guild.stringID } returns id.toString()
+    every { guild.owner } returns owner
 
     return guild
 }

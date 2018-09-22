@@ -25,7 +25,7 @@ object AllUsers : Permission() {
  */
 object NoUsers : Permission() {
     override fun userIsPrivileged(user: IUser): Boolean = false
-    override fun toString(): String = "Permission: Server owner only"
+    override fun toString(): String = "Permission: No users"
 }
 
 /**
