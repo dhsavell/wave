@@ -4,12 +4,19 @@ import sx.blah.discord.api.internal.json.objects.EmbedObject
 import sx.blah.discord.util.EmbedBuilder
 import java.awt.Color
 
-class DslEmbedBuilder internal constructor(initBlock: DslEmbedBuilder.() -> Unit) {
-    val builder = EmbedBuilder()
+object StatusColors {
+    val INFO = Color(0x45a1ff)
+    val WARNING = Color(0xffe900)
+    val ERROR = Color(0xff0039)
+    val SUCCESS = Color(0x30e60b)
+}
 
-    init {
-        initBlock()
-    }
+@DslMarker
+annotation class EmbedDsl
+
+@EmbedDsl
+class DslEmbedBuilder {
+    val builder = EmbedBuilder()
 
     fun title(init: DslEmbedBuilder.() -> String) {
         builder.withTitle(init())
@@ -36,4 +43,4 @@ class DslEmbedBuilder internal constructor(initBlock: DslEmbedBuilder.() -> Unit
     }
 }
 
-fun embed(initBlock: DslEmbedBuilder.() -> Unit): EmbedObject = DslEmbedBuilder(initBlock).build()
+fun embed(init: DslEmbedBuilder.() -> Unit): EmbedObject = DslEmbedBuilder().apply(init).build()
