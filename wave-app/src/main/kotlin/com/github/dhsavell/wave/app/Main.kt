@@ -1,6 +1,6 @@
 package com.github.dhsavell.wave.app
 
-import com.github.dhsavell.wave.core.bot.Bot
+import com.github.dhsavell.wave.core.bot.WaveBot
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.mainBody
 import mu.KotlinLogging
@@ -15,7 +15,7 @@ class Launcher(parser: ArgParser) {
     fun runBot() {
         val db = if (useMemoryDB) { DBMaker.memoryDB().make() } else { DBMaker.fileDB("./wave.db").make() }
         val client = ClientBuilder().withToken(token).build()
-        val bot = Bot(client, KotlinLogging.logger { }, prefix, db, getAllCommandFactories())
+        val bot = WaveBot(client, KotlinLogging.logger { }, prefix, db, getAllCommandFactories())
 
         bot.runForever()
     }

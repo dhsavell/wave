@@ -17,11 +17,10 @@ open class SimpleCommandFactory(
 ) : CommandFactory, PermissionBoundAction {
     override val permissionDescriptor: String = primaryCommandName
 
-    override fun canProvideFor(commandName: String, context: IMessage, db: Nitrite): Boolean {
-        return primaryCommandName.equals(commandName, ignoreCase = true) ||
+    override fun canProvideFor(commandName: String, context: IMessage, db: Nitrite): Boolean =
+        primaryCommandName.equals(commandName, ignoreCase = true) ||
             (commandAliases.isNotEmpty() &&
                 commandAliases.map { alias -> alias.toLowerCase() }.contains(commandName.toLowerCase()))
-    }
 
     override fun getAction(commandCall: String, context: IMessage, db: Nitrite): Command =
         commandProvider(commandCall, context, db)
